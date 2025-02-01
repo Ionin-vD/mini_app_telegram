@@ -32,16 +32,9 @@ const initDB = async () => {
     });
 
     await dbPool.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        chat_id INT NOT NULL UNIQUE
-      );
-    `);
-
-    await dbPool.query(`
       CREATE TABLE IF NOT EXISTS user_data (
         id SERIAL PRIMARY KEY,
-        user_id INT REFERENCES users(id),
+        chat_id INT NOT NULL UNIQUE,
         fio VARCHAR(255) NOT NULL,
         isAdmin BOOLEAN DEFAULT FALSE,
         isAuth BOOLEAN DEFAULT FALSE,
@@ -59,7 +52,7 @@ const initDB = async () => {
     await dbPool.query(`
       CREATE TABLE IF NOT EXISTS schedule (
         id SERIAL PRIMARY KEY,
-        chat_id INT REFERENCES users(chat_id),
+        chat_id INT REFERENCES user_data(chat_id),
         themes_id INT REFERENCES survey_topics(id),
         data DATE NOT NULL,
         time TIME WITHOUT TIME ZONE NOT NULL
@@ -69,7 +62,7 @@ const initDB = async () => {
     await dbPool.query(`
         CREATE TABLE IF NOT EXISTS progress (
           id SERIAL PRIMARY KEY,
-          chat_id INT REFERENCES users(chat_id),
+          chat_id INT REFERENCES user_data(chat_id),
           themes_id INT REFERENCES survey_topics(id),
           status INT DEFAULT 0
         );

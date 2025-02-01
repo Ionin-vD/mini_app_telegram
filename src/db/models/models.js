@@ -11,15 +11,9 @@ const createUser = async (
   try {
     await client.query("BEGIN");
 
-    const userResult = await client.query(
-      "INSERT INTO users (chat_id) VALUES ($1) RETURNING id",
-      [chat_id]
-    );
-    const userId = userResult.rows[0].id;
-
     const userDataResult = await client.query(
-      "INSERT INTO user_data (user_id, fio, isAdmin, isAuth, isDeleted) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [userId, fio, isAdmin, isAuth, isDeleted]
+      "INSERT INTO user_data (chat_id, fio, isAdmin, isAuth, isDeleted) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [chat_id, fio, isAdmin, isAuth, isDeleted]
     );
 
     await client.query("COMMIT");
@@ -34,9 +28,10 @@ const createUser = async (
 };
 
 const findUserByChatId = async (chat_id) => {
-  const result = await pool.query(`SELECT * FROM users WHERE chat_id = $1`, [
-    chat_id,
-  ]);
+  const result = await pool.query(
+    `SELECT id, fio, isAdmin, isAuth FROM user_data WHERE chat_id = $1`,
+    [chat_id]
+  );
   return result.rows[0];
 };
 
@@ -49,7 +44,7 @@ const getAllUser = async () => {
 
 const getAllSchedule = async () => {
   const result = await pool.query(
-    `SELECT 
+    ` SELECT 
       schedule.id,
       user_data.fio,
       survey_topics.themes,
@@ -57,14 +52,17 @@ const getAllSchedule = async () => {
       schedule.time
     FROM 
       schedule
-    JOIN 
-      users ON schedule.chat_id = users.chat_id
-    JOIN 
-      user_data ON users.id = user_data.user_id
-    JOIN 
+    LEFT JOIN 
+      user_data ON schedule.chat_id = user_data.chat_id
+    LEFT JOIN 
       survey_topics ON schedule.themes_id = survey_topics.id`
   );
   return result.rows;
 };
 
-module.exports = { createUser, findUserByChatId, getAllUser, getAllSchedule };
+module.exports = {
+  createUser,
+  findUserByChatId,
+  getAllUser,
+  getAllSchedule,
+};

@@ -48,4 +48,26 @@ const getAllSchedules = async (req, res) => {
   }
 };
 
-module.exports = { registerUserBot, checkStart, getAllUsers, getAllSchedules };
+const checkAuthUser = async (req, res) => {
+  const { chat_id } = req.body;
+
+  try {
+    const existingUser = await findUserByChatId(chat_id);
+
+    if (!existingUser.isauth) {
+      return res.status(400).json({ message: "Пользователь не авторизован" });
+    } else {
+      res.status(201).json({ existingUser });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+  }
+};
+
+module.exports = {
+  registerUserBot,
+  checkStart,
+  getAllUsers,
+  getAllSchedules,
+  checkAuthUser,
+};
