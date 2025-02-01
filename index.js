@@ -4,8 +4,8 @@ const { Telegraf, Markup } = require("telegraf");
 const messages = require("./messages");
 const routes = require("./src/routes/routes");
 const {
-  registerUserBot,
   checkStart,
+  registerUserBot,
 } = require("./src/controllers/controllers");
 require("dotenv").config();
 
@@ -106,8 +106,8 @@ bot.on("text", async (ctx) => {
       return;
     }
 
-    console.log(`ФИО пользователя ${chat_id}: ${fio}`);
-    //registerUserBot(chat_id, fio)
+    //console.log(`ФИО пользователя ${chat_id}: ${fio}`);
+    registerUserBot(chat_id, fio);
 
     await ctx.reply(messages.awaitFIOAdmin);
 

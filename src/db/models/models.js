@@ -10,16 +10,16 @@ const createUser = async (
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
-
     const userDataResult = await client.query(
       "INSERT INTO user_data (chat_id, fio, isAdmin, isAuth, isDeleted) VALUES ($1, $2, $3, $4, $5) RETURNING *",
       [chat_id, fio, isAdmin, isAuth, isDeleted]
     );
-
     await client.query("COMMIT");
 
     return userDataResult.rows[0];
   } catch (error) {
+    console.log(error);
+
     await client.query("ROLLBACK");
     throw error;
   } finally {

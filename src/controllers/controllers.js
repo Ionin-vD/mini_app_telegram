@@ -16,11 +16,10 @@ const getAllUsers = async (req, res) => {
 
 const registerUserBot = async (chat_id, fio) => {
   try {
-    const existingUser = await findUserByChatId(chat_id);
-    if (existingUser) {
-      return 201;
+    const user = await createUser(chat_id, fio);
+    if (user) {
+      return 200;
     }
-    await createUser(chat_id, fio);
     return 200;
   } catch (error) {
     return 500;
@@ -35,7 +34,7 @@ const checkStart = async (chat_id) => {
     }
     return 200;
   } catch (error) {
-    return 500;
+    return 200;
   }
 };
 
