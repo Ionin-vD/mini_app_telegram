@@ -1,12 +1,13 @@
 const {
   createUser,
   findUserByChatId,
-  getAll,
-} = require("../db/models/user_model");
+  getAllUser,
+  getAllSchedule,
+} = require("../db/models/models");
 
 const getAllUsers = async (req, res) => {
   try {
-    const result = await getAll();
+    const result = await getAllUser();
     res.status(200).json({ result });
   } catch (error) {
     res.status(500).json({ message: "Ошибка при выполнение запроса", error });
@@ -38,4 +39,13 @@ const checkStart = async (chat_id) => {
   }
 };
 
-module.exports = { registerUserBot, checkStart, getAllUsers };
+const getAllSchedules = async (req, res) => {
+  try {
+    const result = await getAllSchedule();
+    res.status(200).json({ result });
+  } catch (error) {
+    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+  }
+};
+
+module.exports = { registerUserBot, checkStart, getAllUsers, getAllSchedules };

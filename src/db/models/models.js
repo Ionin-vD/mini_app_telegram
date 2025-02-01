@@ -34,17 +34,37 @@ const createUser = async (
 };
 
 const findUserByChatId = async (chat_id) => {
-  const result = await pool.query("SELECT * FROM users WHERE chat_id = $1", [
+  const result = await pool.query(`SELECT * FROM users WHERE chat_id = $1`, [
     chat_id,
   ]);
   return result.rows[0];
 };
 
-const getAll = async () => {
+const getAllUser = async () => {
   const result = await pool.query(
-    "SELECT id, fio, isAdmin, isAuth FROM user_data"
+    `SELECT id, fio, isAdmin, isAuth FROM user_data`
   );
   return result.rows;
 };
 
-module.exports = { createUser, findUserByChatId, getAll };
+const getAllSchedule = async () => {
+  const result = await pool.query(
+    `SELECT 
+      schedule.id,
+      user_data.fio,
+      survey_topics.themes,
+      schedule.data,
+      schedule.time
+    FROM 
+      schedule
+    JOIN 
+      users ON schedule.chat_id = users.chat_id
+    JOIN 
+      user_data ON users.id = user_data.user_id
+    JOIN 
+      survey_topics ON schedule.themes_id = survey_topics.id`
+  );
+  return result.rows;
+};
+
+module.exports = { createUser, findUserByChatId, getAllUser, getAllSchedule };
