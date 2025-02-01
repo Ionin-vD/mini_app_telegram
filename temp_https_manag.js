@@ -90,7 +90,7 @@ bot.on("text", async (ctx) => {
     }
 
     console.log(`ФИО пользователя ${chat_id}: ${fio}`);
-    //registerUserBot(chat_id, fio)
+    registerUserBot(chat_id, fio);
 
     await ctx.reply(messages.awaitFIOAdmin);
 

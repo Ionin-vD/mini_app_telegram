@@ -1,7 +1,7 @@
 const { Pool } = require("pg");
 const messages = require("../../../messages");
 require("dotenv").config({
-  path: "/mnt/Files/datadesktop/mini_app_telegram/.env",
+  path: "../../../.env",
 });
 
 const initDB = async () => {
