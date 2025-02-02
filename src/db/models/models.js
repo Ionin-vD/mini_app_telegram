@@ -128,10 +128,9 @@ const deleteScheduleM = async (id) => {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
-    console.log("mas id in model: " + id);
 
     const result = await client.query(
-      "DELETE FROM schedule WHERE id = ANY($1) AND chat_id IS null",
+      "DELETE FROM schedule WHERE id = ANY($1) AND chat_id IS null RETURNING *",
       [id]
     );
     await client.query("COMMIT");
