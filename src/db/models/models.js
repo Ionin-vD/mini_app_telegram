@@ -124,6 +124,28 @@ const addFreeScheduleM = async (
   }
 };
 
+const deleteScheduleM = async (id) => {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    console.log(id);
+
+    const result = await client.query(
+      "DELETE FROM schedule WHERE id = $1 AND chat_id IS null",
+      [id]
+    );
+    await client.query("COMMIT");
+
+    return result.rows[0];
+  } catch (error) {
+    console.log(error);
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
 module.exports = {
   createUserM,
   findUserByChatIdM,
@@ -131,4 +153,5 @@ module.exports = {
   getAllScheduleM,
   getFreeScheduleM,
   addFreeScheduleM,
+  deleteScheduleM,
 };

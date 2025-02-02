@@ -5,6 +5,7 @@ const {
   getAllScheduleM,
   getFreeScheduleM,
   addFreeScheduleM,
+  deleteScheduleM,
 } = require("../db/models/models");
 
 const getAllUsers = async (req, res) => {
@@ -98,6 +99,23 @@ const addFreeSchedule = async (req, res) => {
   }
 };
 
+const deleteSchedule = async (req, res) => {
+  const { id } = req.body;
+  try {
+    const result = await deleteScheduleM(id);
+
+    if (result === null) {
+      return res
+        .status(400)
+        .json({ message: "Ошибка при добавления расписания" });
+    } else {
+      res.status(201).json({ result });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+  }
+};
+
 module.exports = {
   registerUserBot,
   checkStart,
@@ -106,4 +124,5 @@ module.exports = {
   checkAuthUser,
   getFreeSchedule,
   addFreeSchedule,
+  deleteSchedule,
 };

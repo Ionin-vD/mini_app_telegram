@@ -5,6 +5,7 @@ const {
   checkAuthUser,
   getFreeSchedule,
   addFreeSchedule,
+  deleteSchedule,
 } = require("../controllers/controllers");
 
 const router = express.Router();
@@ -18,5 +19,7 @@ router.post("/check_auth", checkAuthUser);
 router.get("/get_free_schedule", getFreeSchedule);
 
 router.post("/add_free_schedule", addFreeSchedule);
+
+router.post("/delete_schedule", deleteSchedule);
 
 module.exports = router;
