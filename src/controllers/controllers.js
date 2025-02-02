@@ -4,6 +4,7 @@ const {
   getAllUserM,
   getAllScheduleM,
   getFreeScheduleM,
+  addFreeScheduleM,
 } = require("../db/models/models");
 
 const getAllUsers = async (req, res) => {
@@ -17,8 +18,8 @@ const getAllUsers = async (req, res) => {
 
 const registerUserBot = async (chat_id, fio) => {
   try {
-    const user = await createUserM(chat_id, fio);
-    if (user) {
+    const result = await createUserM(chat_id, fio);
+    if (result) {
       return 200;
     }
     return 200;
@@ -52,8 +53,10 @@ const checkAuthUser = async (req, res) => {
   const { chat_id } = req.body;
 
   try {
-    const result = await findUserByChatIdM(chat_id);
+    console.log(1);
 
+    const result = await findUserByChatIdM(chat_id);
+    console.log(result);
     if (!result.isauth) {
       return res.status(400).json({ message: "Пользователь не авторизован" });
     } else {
@@ -78,6 +81,23 @@ const getFreeSchedule = async (req, res) => {
   }
 };
 
+const addFreeSchedule = async (req, res) => {
+  const { date, time } = req.body;
+  try {
+    const result = await addFreeScheduleM(null, null, date, time);
+
+    if (result === null) {
+      return res
+        .status(400)
+        .json({ message: "Ошибка при добавления расписания" });
+    } else {
+      res.status(201).json({ result });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+  }
+};
+
 module.exports = {
   registerUserBot,
   checkStart,
@@ -85,4 +105,5 @@ module.exports = {
   getAllSchedules,
   checkAuthUser,
   getFreeSchedule,
+  addFreeSchedule,
 };
