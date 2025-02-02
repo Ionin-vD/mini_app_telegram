@@ -1,6 +1,6 @@
 const pool = require("../config/config");
 
-const createUser = async (
+const createUserM = async (
   chat_id,
   fio,
   isAdmin = false,
@@ -27,7 +27,7 @@ const createUser = async (
   }
 };
 
-const findUserByChatId = async (chat_id) => {
+const findUserByChatIdM = async (chat_id) => {
   const result = await pool.query(
     `SELECT id, fio, isAdmin, isAuth FROM user_data WHERE chat_id = $1`,
     [chat_id]
@@ -35,14 +35,14 @@ const findUserByChatId = async (chat_id) => {
   return result.rows[0];
 };
 
-const getAllUser = async () => {
+const getAllUserM = async () => {
   const result = await pool.query(
     `SELECT id, fio, isAdmin, isAuth FROM user_data`
   );
   return result.rows;
 };
 
-const getAllSchedule = async () => {
+const getAllScheduleM = async () => {
   const result = await pool.query(
     ` SELECT 
       schedule.id,
@@ -60,9 +60,30 @@ const getAllSchedule = async () => {
   return result.rows;
 };
 
+const getFreeScheduleM = async () => {
+  const result = await pool.query(
+    ` SELECT 
+      schedule.id,
+      user_data.fio,
+      survey_topics.themes,
+      schedule.data,
+      schedule.time
+    FROM 
+      schedule
+    LEFT JOIN 
+      user_data ON schedule.chat_id = user_data.chat_id
+    LEFT JOIN 
+      survey_topics ON schedule.themes_id = survey_topics.id
+    WHERE 
+      schedule.chat_id IS NULL`
+  );
+  return result.rows;
+};
+
 module.exports = {
-  createUser,
-  findUserByChatId,
-  getAllUser,
-  getAllSchedule,
+  createUserM,
+  findUserByChatIdM,
+  getAllUserM,
+  getAllScheduleM,
+  getFreeScheduleM,
 };

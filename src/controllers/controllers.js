@@ -1,13 +1,14 @@
 const {
-  createUser,
-  findUserByChatId,
-  getAllUser,
-  getAllSchedule,
+  createUserM,
+  findUserByChatIdM,
+  getAllUserM,
+  getAllScheduleM,
+  getFreeScheduleM,
 } = require("../db/models/models");
 
 const getAllUsers = async (req, res) => {
   try {
-    const result = await getAllUser();
+    const result = await getAllUserM();
     res.status(200).json({ result });
   } catch (error) {
     res.status(500).json({ message: "Ошибка при выполнение запроса", error });
@@ -16,7 +17,7 @@ const getAllUsers = async (req, res) => {
 
 const registerUserBot = async (chat_id, fio) => {
   try {
-    const user = await createUser(chat_id, fio);
+    const user = await createUserM(chat_id, fio);
     if (user) {
       return 200;
     }
@@ -28,8 +29,8 @@ const registerUserBot = async (chat_id, fio) => {
 
 const checkStart = async (chat_id) => {
   try {
-    const existingUser = await findUserByChatId(chat_id);
-    if (existingUser) {
+    const result = await findUserByChatIdM(chat_id);
+    if (result) {
       return 201;
     }
     return 200;
@@ -40,7 +41,7 @@ const checkStart = async (chat_id) => {
 
 const getAllSchedules = async (req, res) => {
   try {
-    const result = await getAllSchedule();
+    const result = await getAllScheduleM();
     res.status(200).json({ result });
   } catch (error) {
     res.status(500).json({ message: "Ошибка при выполнение запроса", error });
@@ -51,12 +52,26 @@ const checkAuthUser = async (req, res) => {
   const { chat_id } = req.body;
 
   try {
-    const existingUser = await findUserByChatId(chat_id);
+    const result = await findUserByChatIdM(chat_id);
 
-    if (!existingUser.isauth) {
+    if (!result.isauth) {
       return res.status(400).json({ message: "Пользователь не авторизован" });
     } else {
-      res.status(201).json({ existingUser });
+      res.status(201).json({ result });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+  }
+};
+
+const getFreeSchedule = async (req, res) => {
+  try {
+    const result = await getFreeScheduleM();
+
+    if (result === null) {
+      return res.status(400).json({ message: "Расписание пусто" });
+    } else {
+      res.status(201).json({ result });
     }
   } catch (error) {
     res.status(500).json({ message: "Ошибка при выполнение запроса", error });
@@ -69,4 +84,5 @@ module.exports = {
   getAllUsers,
   getAllSchedules,
   checkAuthUser,
+  getFreeSchedule,
 };
