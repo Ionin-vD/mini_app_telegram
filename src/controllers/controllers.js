@@ -54,10 +54,7 @@ const checkAuthUser = async (req, res) => {
   const { chat_id } = req.body;
 
   try {
-    console.log(1);
-
     const result = await findUserByChatIdM(chat_id);
-    console.log(result);
     if (!result.isauth) {
       return res.status(400).json({ message: "Пользователь не авторизован" });
     } else {
@@ -101,6 +98,8 @@ const addFreeSchedule = async (req, res) => {
 
 const deleteSchedule = async (req, res) => {
   const { id } = req.body;
+  console.log("mas id in controller: " + id);
+
   try {
     const result = await deleteScheduleM(id);
 
