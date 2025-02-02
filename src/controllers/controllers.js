@@ -98,6 +98,8 @@ const addFreeSchedule = async (req, res) => {
 
 const deleteSchedule = async (req, res) => {
   const { id } = req.body;
+  console.log("req.body.id id in controller: " + req.body.id);
+  console.log("req.body id in controller: " + req.body);
   console.log("mas id in controller: " + id);
 
   try {

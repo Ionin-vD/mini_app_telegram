@@ -21,36 +21,6 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// app.get("/api/getUser", async (req, res) => {
-//   const { initData } = req.body;
-
-// if (!initData) {
-//   return res.status(400).json({ error: "initData is required" });
-// }
-
-// const params = new URLSearchParams(initData);
-// const chatId = params.get("user.id");
-
-//   try {
-//     await bot.telegram.answerWebAppQuery(1, {
-//       type: "article",
-//       id: 1,
-//       title: "Ваше сообщение",
-//       input_message_content: {
-//         message_text: message,
-//       },
-//     });
-//     res.status(200).json({
-//       isAdmin: false,
-//       fio: "test",
-//       chatId: queryId,
-//     });
-//   } catch (e) {
-//     console.error(e);
-//     res.status(500).json({ error: messages.internalServerError });
-//   }
-// });
-
 const userState = {};
 
 app.use("/api/mini_app", routes);
