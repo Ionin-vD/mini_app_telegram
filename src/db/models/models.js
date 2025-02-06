@@ -1,156 +1,82 @@
-const pool = require("../config/config");
+const { Sequelize, DataTypes } = require("sequelize");
+require("dotenv").config({ path: ".env" });
 
-const createUserM = async (
-  chat_id,
-  fio,
-  isAdmin = false,
-  isAuth = false,
-  isDeleted = false
-) => {
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
-    const result = await client.query(
-      "INSERT INTO user_data (chat_id, fio, isAdmin, isAuth, isDeleted) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [chat_id, fio, isAdmin, isAuth, isDeleted]
-    );
-    await client.query("COMMIT");
-
-    return result.rows[0];
-  } catch (error) {
-    console.log(error);
-    await client.query("ROLLBACK");
-    throw error;
-  } finally {
-    client.release();
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    dialect: "postgres",
+    logging: false,
   }
-};
+);
 
-const findUserByChatIdM = async (chat_id) => {
-  try {
-    const result = await pool.query(
-      `SELECT id, fio, isAdmin, isAuth FROM user_data WHERE chat_id = $1`,
-      [chat_id]
-    );
-    return result.rows[0];
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+const UserData = sequelize.define(
+  "user_data",
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    chat_id: { type: DataTypes.BIGINT, unique: true, allowNull: false },
+    fio: { type: DataTypes.STRING, allowNull: false },
+    isAdmin: { type: DataTypes.BOOLEAN, defaultValue: false },
+    isAuth: { type: DataTypes.BOOLEAN, defaultValue: false },
+    isDeleted: { type: DataTypes.BOOLEAN, defaultValue: false },
+  },
+  { timestamps: false }
+);
 
-const getAllUserM = async () => {
-  try {
-    const result = await pool.query(
-      `SELECT id, fio, isAdmin, isAuth FROM user_data`
-    );
-    return result.rows;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+const SurveyTopics = sequelize.define(
+  "survey_topics",
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    themes: { type: DataTypes.STRING, allowNull: false },
+  },
+  { timestamps: false }
+);
 
-const getAllScheduleM = async () => {
-  try {
-    const result = await pool.query(
-      ` SELECT
-      schedule.id,
-      user_data.fio,
-      survey_topics.themes,
-      schedule.data,
-      schedule.time
-    FROM
-      schedule
-    LEFT JOIN
-      user_data ON schedule.chat_id = user_data.chat_id
-    LEFT JOIN
-      survey_topics ON schedule.themes_id = survey_topics.id`
-    );
-    return result.rows;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+const Schedule = sequelize.define(
+  "schedule",
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    chat_id: { type: DataTypes.BIGINT, allowNull: true },
+    themes_id: { type: DataTypes.INTEGER, allowNull: true },
+    date: { type: DataTypes.DATEONLY, allowNull: false },
+    time: { type: DataTypes.TIME, allowNull: false },
+  },
+  { timestamps: false }
+);
 
-const getFreeScheduleM = async () => {
-  try {
-    const result = await pool.query(
-      ` SELECT
-    schedule.id,
-    user_data.fio,
-    survey_topics.themes,
-    schedule.data,
-    schedule.time
-  FROM
-    schedule
-  LEFT JOIN
-    user_data ON schedule.chat_id = user_data.chat_id
-  LEFT JOIN
-    survey_topics ON schedule.themes_id = survey_topics.id
-  WHERE
-    schedule.chat_id IS NULL`
-    );
-    return result.rows;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+const Progress = sequelize.define(
+  "progress",
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    chat_id: { type: DataTypes.BIGINT, allowNull: false },
+    themes_id: { type: DataTypes.INTEGER, allowNull: false },
+    status: { type: DataTypes.INTEGER, defaultValue: 0 },
+  },
+  { timestamps: false }
+);
 
-const addFreeScheduleM = async (
-  chatId = null,
-  themesId = null,
-  date = "02.02.2025",
-  time = "10:00:00"
-) => {
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
-    const result = await client.query(
-      "INSERT INTO schedule (chat_id, themes_id, data, time) VALUES ($1, $2, $3, $4) RETURNING *",
-      [chatId, themesId, date, time]
-    );
-    await client.query("COMMIT");
+// Определение связей
 
-    return result.rows[0];
-  } catch (error) {
-    console.log(error);
-    await client.query("ROLLBACK");
-    throw error;
-  } finally {
-    client.release();
-  }
-};
+// Schedule и Progress ссылаются на user_data (по chat_id)
+UserData.hasMany(Schedule, { foreignKey: "chat_id" });
+Schedule.belongsTo(UserData, { foreignKey: "chat_id" });
 
-const deleteScheduleM = async (id) => {
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
+UserData.hasMany(Progress, { foreignKey: "chat_id" });
+Progress.belongsTo(UserData, { foreignKey: "chat_id" });
 
-    const result = await client.query(
-      "DELETE FROM schedule WHERE id = ANY($1) AND chat_id IS null RETURNING *",
-      [id]
-    );
-    await client.query("COMMIT");
+// Schedule и Progress ссылаются на survey_topics (по themes_id)
+SurveyTopics.hasMany(Schedule, { foreignKey: "themes_id" });
+Schedule.belongsTo(SurveyTopics, { foreignKey: "themes_id" });
 
-    return result.rows;
-  } catch (error) {
-    console.log(error);
-    await client.query("ROLLBACK");
-    throw error;
-  } finally {
-    client.release();
-  }
-};
+SurveyTopics.hasMany(Progress, { foreignKey: "themes_id" });
+Progress.belongsTo(SurveyTopics, { foreignKey: "themes_id" });
 
-module.exports = {
-  createUserM,
-  findUserByChatIdM,
-  getAllUserM,
-  getAllScheduleM,
-  getFreeScheduleM,
-  addFreeScheduleM,
-  deleteScheduleM,
-};
+sequelize
+  .sync({ force: false })
+  .then(() => console.log("База данных синхронизирована"))
+  .catch((err) => console.error("Ошибка синхронизации базы данных: ", err));
+
+module.exports = { sequelize, UserData, SurveyTopics, Schedule, Progress };

@@ -10,11 +10,11 @@ const {
 
 const router = express.Router();
 
+router.post("/check_auth", checkAuthUser);
+
 router.get("/get_all_user", getAllUsers);
 
 router.get("/get_all_schedule", getAllSchedules);
-
-router.post("/check_auth", checkAuthUser);
 
 router.get("/get_free_schedule", getFreeSchedule);
 
