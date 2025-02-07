@@ -6,6 +6,8 @@ const {
   getFreeSchedule,
   addFreeSchedule,
   deleteSchedule,
+  updateUser,
+  getAllUsersIsDelete,
 } = require("../controllers/controllers");
 
 const router = express.Router();
@@ -13,6 +15,10 @@ const router = express.Router();
 router.post("/check_auth", checkAuthUser);
 
 router.get("/get_all_user", getAllUsers);
+
+router.get("/get_all_user_is_delete", getAllUsersIsDelete);
+
+router.post("/update_user", updateUser);
 
 router.get("/get_all_schedule", getAllSchedules);
 

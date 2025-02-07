@@ -58,8 +58,6 @@ const Progress = sequelize.define(
   { timestamps: false }
 );
 
-// Определение связей
-
 // Schedule и Progress ссылаются на user_data (по chat_id)
 UserData.hasMany(Schedule, { foreignKey: "chat_id" });
 Schedule.belongsTo(UserData, { foreignKey: "chat_id" });
