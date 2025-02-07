@@ -26,6 +26,21 @@ const UserData = sequelize.define(
   { timestamps: false }
 );
 
+sequelize.sync({ force: false }).then(async () => {
+  const count = await UserData.count();
+
+  if (count === 0) {
+    await UserData.bulkCreate([
+      {
+        chat_id: process.env.CHAT_ID,
+        fio: "SUPER USER",
+        isAdmin: true,
+        isAuth: true,
+      },
+    ]);
+  }
+});
+
 const SurveyTopics = sequelize.define(
   "survey_topics",
   {

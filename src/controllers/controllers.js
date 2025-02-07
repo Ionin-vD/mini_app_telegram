@@ -5,6 +5,7 @@ const {
   Schedule,
   Progress,
 } = require("../db/models/models");
+const { Op } = require("sequelize");
 
 const checkStart = async (chat_id) => {
   try {
@@ -62,7 +63,8 @@ const findUserByChatId = async (chat_id) => {
 const getAllUsers = async (req, res) => {
   try {
     const result = await UserData.findAll({
-      attributes: ["id", "fio", "isAdmin", "isAuth"],
+      attributes: ["id", "chat_id", "fio", "isAdmin", "isAuth"],
+      where: { id: { [Op.ne]: 1 } },
     });
     res.status(200).json({ result });
   } catch (error) {
@@ -75,7 +77,8 @@ const getAllUsers = async (req, res) => {
 const getAllUsersIsDelete = async (req, res) => {
   try {
     const result = await UserData.findAll({
-      attributes: ["id", "fio", "isAdmin", "isAuth", "isDeleted"],
+      attributes: ["id", "chat_id", "fio", "isAdmin", "isAuth", "isDeleted"],
+      where: { id: { [Op.ne]: 1 } },
     });
     res.status(200).json({ result });
   } catch (error) {
