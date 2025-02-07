@@ -36,7 +36,7 @@ const createUser = async (chat_id, fio) => {
       chat_id,
       fio,
       isAdmin: false,
-      isAuth: false,
+      isAuth: true,
       isDeleted: false,
     });
     return result;
@@ -123,6 +123,7 @@ const getFreeSchedule = async () => {
       ],
     });
     if (result === null) {
+      console.error("Ошибка при выполнение запроса", error);
       return res.status(500).json({ message: "Расписание пусто" });
     } else {
       res.status(200).json({ result });
@@ -144,6 +145,7 @@ const addFreeSchedule = async (req, res) => {
       time: time,
     });
     if (result === null) {
+      console.error("Ошибка при выполнение запроса", error);
       return res
         .status(500)
         .json({ message: "Ошибка при добавления расписания" });
@@ -167,6 +169,7 @@ const deleteSchedule = async (req, res) => {
       },
     });
     if (result === null) {
+      console.error("Ошибка при выполнение запроса", error);
       return res
         .status(500)
         .json({ message: "Ошибка при удалении расписания" });
@@ -186,12 +189,13 @@ const checkAuthUser = async (req, res) => {
   try {
     const result = await findUserByChatId(chat_id);
     if (!result.isAuth) {
+      console.error("Ошибка при выполнение запроса", error);
       return res.status(500).json({ message: "Пользователь не авторизован" });
     } else {
       res.status(200).json({ result });
     }
   } catch (error) {
-    console.error("Ошибка при удалении расписания:", error);
+    console.error("Ошибка при выполнение запроса", error);
     res.status(500).json({ message: "Ошибка при выполнение запроса", error });
   }
 };
@@ -211,11 +215,13 @@ const updateUser = async (req, res) => {
 
     const result = await user.save();
     if (result === null) {
+      console.error("Ошибка при выполнение запроса", error);
       res.status(500).json({ message: "Ошибка при выполнение запроса" });
     } else {
       res.status(200).json({ result });
     }
   } catch (error) {
+    console.error("Ошибка при выполнение запроса", error);
     res.status(500).json({ message: "Ошибка при выполнение запроса", error });
   }
 };
