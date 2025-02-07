@@ -26,21 +26,6 @@ const UserData = sequelize.define(
   { timestamps: false }
 );
 
-sequelize.sync({ force: false }).then(async () => {
-  const count = await UserData.count();
-
-  if (count === 0) {
-    await UserData.bulkCreate([
-      {
-        chat_id: process.env.CHAT_ID,
-        fio: "SUPER USER",
-        isAdmin: true,
-        isAuth: true,
-      },
-    ]);
-  }
-});
-
 const SurveyTopics = sequelize.define(
   "survey_topics",
   {
@@ -89,7 +74,20 @@ Progress.belongsTo(SurveyTopics, { foreignKey: "themes_id" });
 
 sequelize
   .sync({ force: false })
-  .then(() => console.log("База данных синхронизирована"))
+  .then(async () => {
+    const count = await UserData.count();
+
+    if (count === 0) {
+      await UserData.bulkCreate([
+        {
+          chat_id: process.env.CHAT_ID,
+          fio: "SUPER USER",
+          isAdmin: true,
+          isAuth: true,
+        },
+      ]);
+    }
+  })
   .catch((err) => console.error("Ошибка синхронизации базы данных: ", err));
 
 module.exports = { sequelize, UserData, SurveyTopics, Schedule, Progress };
