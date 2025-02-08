@@ -1,9 +1,10 @@
 const {
   sequelize,
-  UserData,
-  SurveyTopics,
+  Users,
   Schedule,
   Progress,
+  ThemesOfCourses,
+  Courses,
 } = require("../db/models/models");
 const { Op } = require("sequelize");
 
@@ -33,7 +34,7 @@ const registerUserBot = async (chat_id, fio) => {
 
 const createUser = async (chat_id, fio) => {
   try {
-    const result = await UserData.create({
+    const result = await Users.create({
       chat_id,
       fio,
       isAdmin: false,
@@ -49,41 +50,61 @@ const createUser = async (chat_id, fio) => {
 
 const findUserByChatId = async (chat_id) => {
   try {
-    const result = await UserData.findOne({
+    const result = await Users.findOne({
       where: { chat_id },
       attributes: ["id", "fio", "isAdmin", "isAuth"],
     });
     return result;
   } catch (error) {
-    console.error("Ошибка при выполнение запроса", error);
+    console.error("Ошибка при поиске пользователя по chat_id", error);
     throw error;
   }
 };
 
 const getAllUsers = async (req, res) => {
   try {
-    const result = await UserData.findAll({
+    const result = await Users.findAll({
       attributes: ["id", "chat_id", "fio", "isAdmin", "isAuth"],
       where: { id: { [Op.ne]: 1 } },
     });
-    res.status(200).json({ result });
+    if (result === null) {
+      res.status(100).json({ message: "users is null" });
+    } else {
+      res.status(200).json({ result });
+    }
   } catch (error) {
-    console.error("Ошибка при выполнение запроса", error);
-    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+    console.error(
+      "Ошибка при выполнение запроса на получение всех пользователей",
+      error
+    );
+    res.status(500).json({
+      message: "Ошибка при выполнение запроса на получение всех пользователей",
+      error,
+    });
     throw error;
   }
 };
 
 const getAllUsersIsDelete = async (req, res) => {
   try {
-    const result = await UserData.findAll({
+    const result = await Users.findAll({
       attributes: ["id", "chat_id", "fio", "isAdmin", "isAuth", "isDeleted"],
       where: { id: { [Op.ne]: 1 } },
     });
-    res.status(200).json({ result });
+    if (result === null) {
+      res.status(100).json({ message: "users is null" });
+    } else {
+      res.status(200).json({ result });
+    }
   } catch (error) {
-    console.error("Ошибка при выполнение запроса", error);
-    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+    console.error(
+      "Ошибка при выполнение запроса на получение всех пользователей",
+      error
+    );
+    res.status(500).json({
+      message: "Ошибка при выполнение запроса на получение всех пользователей",
+      error,
+    });
     throw error;
   }
 };
@@ -93,67 +114,107 @@ const getAllSchedules = async (req, res) => {
     const result = await Schedule.findAll({
       include: [
         {
-          model: UserData,
+          model: Users,
           attributes: ["fio"],
         },
         {
-          model: SurveyTopics,
-          attributes: ["themes"],
-        },
-      ],
-    });
-    res.status(200).json({ result });
-  } catch (error) {
-    console.error("Ошибка при выполнение запроса", error);
-    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
-    throw error;
-  }
-};
-
-const getFreeSchedule = async () => {
-  try {
-    const result = await Schedule.findAll({
-      where: { chat_id: null },
-      include: [
-        {
-          model: UserData,
-          attributes: ["fio"],
-        },
-        {
-          model: SurveyTopics,
-          attributes: ["themes"],
+          model: ThemesOfCourses,
+          attributes: ["title"],
         },
       ],
     });
     if (result === null) {
-      console.error("Ошибка при выполнение запроса", error);
-      return res.status(500).json({ message: "Расписание пусто" });
+      res.status(100).json({ message: "schedules is null" });
     } else {
       res.status(200).json({ result });
     }
   } catch (error) {
-    console.error("Ошибка при выполнение запроса", error);
-    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+    console.error(
+      "Ошибка при выполнение запроса на получение всего расписания",
+      error
+    );
+    res.status(500).json({
+      message: "Ошибка при выполнение запроса на получение всего расписания",
+      error,
+    });
     throw error;
   }
 };
 
-const addFreeSchedule = async (req, res) => {
-  const { date, time } = req.body;
+const getFreeSchedule = async (req, res) => {
   try {
-    const result = await Schedule.create({
-      chat_id: null,
-      themes_id: null,
-      date: date,
-      time: time,
+    const result = await Schedule.findAll({
+      where: { user_id: null },
+      include: [
+        {
+          model: Users,
+          attributes: ["fio"],
+        },
+        {
+          model: ThemesOfCourses,
+          attributes: ["title"],
+        },
+      ],
     });
     if (result === null) {
-      console.error("Ошибка при выполнение запроса", error);
-      return res
-        .status(500)
-        .json({ message: "Ошибка при добавления расписания" });
+      res.status(100).json({ message: "free schedules is null" });
     } else {
       res.status(200).json({ result });
+    }
+  } catch (error) {
+    console.error(
+      "Ошибка при выполнение запроса на получение всего расписания",
+      error
+    );
+    res.status(500).json({
+      message: "Ошибка при выполнение запроса на получение всего расписания",
+      error,
+    });
+    throw error;
+  }
+};
+
+const checkAuthUser = async (req, res) => {
+  const { chat_id } = req.body;
+
+  try {
+    if (chat_id === null) {
+      return res.status(201).json({ message: "body is null" });
+    } else {
+      const result = await findUserByChatId(chat_id);
+      if (!result.isAuth) {
+        return res.status(200).json({ message: "Пользователь не авторизован" });
+      } else {
+        res.status(200).json({ result });
+      }
+    }
+  } catch (error) {
+    console.error("Ошибка при выполнение запроса", error);
+    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+  }
+};
+
+const addFreeSchedule = async (req, res) => {
+  const { date, time, course_id } = req.body;
+  try {
+    if (date === null || date === time || course_id === null) {
+      return res.status(201).json({ message: "body is null" });
+    } else {
+      const result = await Schedule.create({
+        user_id: null,
+        theme_id: null,
+        course_id: course_id,
+        date: date,
+        time: time,
+      });
+      if (result === null) {
+        console.error("Ошибка при выполнение запроса", error);
+        return res
+          .status(500)
+          .json({ message: "Ошибка при добавления расписания" });
+      } else {
+        res.status(200).json({ result });
+      }
     }
   } catch (error) {
     console.error("Ошибка при выполнение запроса", error);
@@ -165,19 +226,23 @@ const addFreeSchedule = async (req, res) => {
 const deleteSchedule = async (req, res) => {
   const { id } = req.body;
   try {
-    const result = await Schedule.destroy({
-      where: {
-        id: id,
-        chat_id: null,
-      },
-    });
-    if (result === null) {
-      console.error("Ошибка при выполнение запроса", error);
-      return res
-        .status(500)
-        .json({ message: "Ошибка при удалении расписания" });
+    if (id === null) {
+      return res.status(201).json({ message: "body is null" });
     } else {
-      res.status(200).json({ result });
+      const result = await Schedule.destroy({
+        where: {
+          id: id,
+          user_id: null,
+        },
+      });
+      if (result === null) {
+        console.error("Ошибка при выполнение запроса", error);
+        return res
+          .status(500)
+          .json({ message: "Ошибка при удалении расписания" });
+      } else {
+        res.status(200).json({ result });
+      }
     }
   } catch (error) {
     console.error("Ошибка при выполнение запроса", error);
@@ -186,16 +251,31 @@ const deleteSchedule = async (req, res) => {
   }
 };
 
-const checkAuthUser = async (req, res) => {
-  const { chat_id } = req.body;
+const updateUser = async (req, res) => {
+  const { id, fio, isAdmin, isAuth, isDeleted } = req.body;
 
   try {
-    const result = await findUserByChatId(chat_id);
-    if (!result.isAuth) {
-      console.error("Ошибка при выполнение запроса", error);
-      return res.status(500).json({ message: "Пользователь не авторизован" });
+    if (id === 1) {
+      return res.status(201).json({ message: "wrong body" });
     } else {
-      res.status(200).json({ result });
+      const user = await Users.findOne({
+        where: { id },
+        attributes: ["id", "fio", "isAdmin", "isAuth", "isDeleted"],
+      });
+      user.fio = fio;
+      user.isAdmin = isAdmin;
+      user.isAuth = isAuth;
+      user.isDeleted = isDeleted;
+
+      const result = await user.save();
+      if (result === null) {
+        console.error("Ошибка при выполнение запроса", error);
+        res
+          .status(500)
+          .json({ message: "Ошибка при обновление данных о пользователе" });
+      } else {
+        res.status(200).json({ result });
+      }
     }
   } catch (error) {
     console.error("Ошибка при выполнение запроса", error);
@@ -203,25 +283,25 @@ const checkAuthUser = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {
-  const { chat_id, fio, isAdmin, isAuth, isDeleted } = req.body;
+const addCourse = async (req, res) => {
+  const { id, title } = req.body;
 
   try {
-    const user = await UserData.findOne({
-      where: { chat_id },
-      attributes: ["id", "fio", "isAdmin", "isAuth", "isDeleted"],
-    });
-    user.fio = fio;
-    user.isAdmin = isAdmin;
-    user.isAuth = isAuth;
-    user.isDeleted = isDeleted;
-
-    const result = await user.save();
-    if (result === null) {
-      console.error("Ошибка при выполнение запроса", error);
-      res.status(500).json({ message: "Ошибка при выполнение запроса" });
+    if (id === 1) {
+      return res.status(201).json({ message: "wrong body" });
     } else {
-      res.status(200).json({ result });
+      const result = await Courses.create({
+        admin_id: id,
+        title: title,
+      });
+      if (result === null) {
+        console.error("Ошибка при выполнение запроса", error);
+        return res
+          .status(500)
+          .json({ message: "Ошибка при добавления расписания" });
+      } else {
+        res.status(200).json({ result });
+      }
     }
   } catch (error) {
     console.error("Ошибка при выполнение запроса", error);
@@ -241,4 +321,5 @@ module.exports = {
   findUserByChatId,
   updateUser,
   getAllUsersIsDelete,
+  addCourse,
 };
