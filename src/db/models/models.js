@@ -52,6 +52,7 @@ const CoursesOfUsers = sequelize.define(
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     user_id: { type: DataTypes.BIGINT, allowNull: false },
     course_id: { type: DataTypes.BIGINT, allowNull: false },
+    auth_in_course: { type: DataTypes.BOOLEAN, defaultValue: false },
   },
   { timestamps: false }
 );

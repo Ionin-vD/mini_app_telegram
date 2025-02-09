@@ -1,16 +1,23 @@
 const express = require("express");
+
 const {
   getAllUsers,
-  getAllSchedules,
   checkAuthUser,
+  updateUser,
+  getAllUsersIsDelete,
+} = require("../controllers/user_controllers");
+
+const {
+  getAllSchedules,
   getFreeSchedule,
   addFreeSchedule,
   deleteSchedule,
-  updateUser,
-  getAllUsersIsDelete,
+} = require("../controllers/schedule_controllers");
+
+const {
   addCourse,
   getAllCourse,
-} = require("../controllers/controllers");
+} = require("../controllers/course_controllers");
 
 const router = express.Router();
 
