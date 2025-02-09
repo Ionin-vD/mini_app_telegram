@@ -174,6 +174,20 @@ const getFreeSchedule = async (req, res) => {
   }
 };
 
+const getAllCourse = async (req, res) => {
+  try {
+    const result = await Courses.findAll();
+    if (result === null) {
+      res.status(100).json({ message: "courses is null" });
+    } else {
+      res.status(200).json({ result });
+    }
+  } catch (error) {
+    console.error("Ошибка при выполнение запроса", error);
+    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+  }
+};
+
 const checkAuthUser = async (req, res) => {
   const { chat_id } = req.body;
 
@@ -322,4 +336,5 @@ module.exports = {
   updateUser,
   getAllUsersIsDelete,
   addCourse,
+  getAllCourse,
 };

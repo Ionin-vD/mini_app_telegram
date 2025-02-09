@@ -9,6 +9,7 @@ const {
   updateUser,
   getAllUsersIsDelete,
   addCourse,
+  getAllCourse,
 } = require("../controllers/controllers");
 
 const router = express.Router();
@@ -20,6 +21,8 @@ router.get("/get_all_user_is_delete", getAllUsersIsDelete);
 router.get("/get_all_schedule", getAllSchedules);
 
 router.get("/get_free_schedule", getFreeSchedule);
+
+router.get("/get_all_courses", getAllCourse);
 
 router.post("/check_auth", checkAuthUser);
 
