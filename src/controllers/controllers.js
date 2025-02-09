@@ -244,7 +244,7 @@ const addFreeSchedule = async (req, res) => {
       }
     }
   } catch (error) {
-    console.error("Ошибка при выполнение запроса (снаружи)", error);
+    console.error("Ошибка при добавление свободного расписания", error);
     res.status(500).json({ message: "Ошибка при выполнение запроса", error });
     throw error;
   }
