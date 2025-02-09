@@ -98,7 +98,7 @@ const getAllUsersIsDelete = async (req, res) => {
     }
   } catch (error) {
     console.error(
-      "Ошибка при выполнение запроса на получение всех пользователей (снаружи)",
+      "Ошибка при выполнение запроса на получение всех пользователей",
       error
     );
     res.status(500).json({
@@ -130,11 +130,11 @@ const getAllSchedules = async (req, res) => {
     }
   } catch (error) {
     console.error(
-      "Ошибка при выполнение запроса на получение всего расписания (снаружи)",
+      "Ошибка при выполнение запроса на получение всего расписания",
       error
     );
     res.status(500).json({
-      message: "Ошибка при выполнение запроса на получение всего расписания",
+      message: "Ошибка при получение всего расписания",
       error,
     });
     throw error;
@@ -163,11 +163,11 @@ const getFreeSchedule = async (req, res) => {
     }
   } catch (error) {
     console.error(
-      "Ошибка при выполнение запроса на получение всего расписания (снаружи)",
+      "Ошибка при выполнение запроса на получение всего расписания",
       error
     );
     res.status(500).json({
-      message: "Ошибка при выполнение запроса на получение всего расписания",
+      message: "Ошибка при получение всего расписания",
       error,
     });
     throw error;
@@ -183,8 +183,13 @@ const getAllCourse = async (req, res) => {
       res.status(200).json({ result });
     }
   } catch (error) {
-    console.error("Ошибка при выполнение запроса (снаружи)", error);
-    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+    console.error(
+      "Ошибка при выполнение запроса на получение всех курсов",
+      error
+    );
+    res
+      .status(500)
+      .json({ message: "Ошибка при получение всех курсов", error });
   }
 };
 
@@ -203,8 +208,13 @@ const checkAuthUser = async (req, res) => {
       }
     }
   } catch (error) {
-    console.error("Ошибка при выполнение запроса (снаружи)", error);
-    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+    console.error(
+      "Ошибка при выполнение запроса авторизации пользователя",
+      error
+    );
+    res
+      .status(500)
+      .json({ message: "Ошибка при авторизации пользователя", error });
   }
 };
 
@@ -222,10 +232,13 @@ const addFreeSchedule = async (req, res) => {
         time: time,
       });
       if (result === null) {
-        console.error("Ошибка при выполнение запроса (внутри)", error);
+        console.error(
+          "Ошибка при выполнение запроса на добавление свободного расписания (res null)",
+          error
+        );
         return res
           .status(500)
-          .json({ message: "Ошибка при добавления расписания" });
+          .json({ message: "Ошибка при добавление свободного расписания" });
       } else {
         res.status(200).json({ result });
       }
