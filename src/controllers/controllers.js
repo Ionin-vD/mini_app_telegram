@@ -43,7 +43,7 @@ const createUser = async (chat_id, fio) => {
     });
     return result;
   } catch (error) {
-    console.error("Ошибка при создании пользователя:", error);
+    console.error("Ошибка при создании пользователя: (снаружи)", error);
     throw error;
   }
 };
@@ -56,7 +56,7 @@ const findUserByChatId = async (chat_id) => {
     });
     return result;
   } catch (error) {
-    console.error("Ошибка при поиске пользователя по chat_id", error);
+    console.error("Ошибка при поиске пользователя по chat_id (снаружи)", error);
     throw error;
   }
 };
@@ -78,7 +78,7 @@ const getAllUsers = async (req, res) => {
       error
     );
     res.status(500).json({
-      message: "Ошибка при выполнение запроса на получение всех пользователей",
+      message: "Ошибка при получение всех пользователей",
       error,
     });
     throw error;
@@ -98,11 +98,11 @@ const getAllUsersIsDelete = async (req, res) => {
     }
   } catch (error) {
     console.error(
-      "Ошибка при выполнение запроса на получение всех пользователей",
+      "Ошибка при выполнение запроса на получение всех пользователей (снаружи)",
       error
     );
     res.status(500).json({
-      message: "Ошибка при выполнение запроса на получение всех пользователей",
+      message: "Ошибка при получение всех пользователей",
       error,
     });
     throw error;
@@ -130,7 +130,7 @@ const getAllSchedules = async (req, res) => {
     }
   } catch (error) {
     console.error(
-      "Ошибка при выполнение запроса на получение всего расписания",
+      "Ошибка при выполнение запроса на получение всего расписания (снаружи)",
       error
     );
     res.status(500).json({
@@ -163,7 +163,7 @@ const getFreeSchedule = async (req, res) => {
     }
   } catch (error) {
     console.error(
-      "Ошибка при выполнение запроса на получение всего расписания",
+      "Ошибка при выполнение запроса на получение всего расписания (снаружи)",
       error
     );
     res.status(500).json({
@@ -183,7 +183,7 @@ const getAllCourse = async (req, res) => {
       res.status(200).json({ result });
     }
   } catch (error) {
-    console.error("Ошибка при выполнение запроса", error);
+    console.error("Ошибка при выполнение запроса (снаружи)", error);
     res.status(500).json({ message: "Ошибка при выполнение запроса", error });
   }
 };
@@ -203,7 +203,7 @@ const checkAuthUser = async (req, res) => {
       }
     }
   } catch (error) {
-    console.error("Ошибка при выполнение запроса", error);
+    console.error("Ошибка при выполнение запроса (снаружи)", error);
     res.status(500).json({ message: "Ошибка при выполнение запроса", error });
   }
 };
@@ -222,7 +222,7 @@ const addFreeSchedule = async (req, res) => {
         time: time,
       });
       if (result === null) {
-        console.error("Ошибка при выполнение запроса", error);
+        console.error("Ошибка при выполнение запроса (внутри)", error);
         return res
           .status(500)
           .json({ message: "Ошибка при добавления расписания" });
@@ -231,7 +231,7 @@ const addFreeSchedule = async (req, res) => {
       }
     }
   } catch (error) {
-    console.error("Ошибка при выполнение запроса", error);
+    console.error("Ошибка при выполнение запроса (снаружи)", error);
     res.status(500).json({ message: "Ошибка при выполнение запроса", error });
     throw error;
   }
@@ -250,7 +250,10 @@ const deleteSchedule = async (req, res) => {
         },
       });
       if (result === null) {
-        console.error("Ошибка при выполнение запроса", error);
+        console.error(
+          "Ошибка при выполнение запроса на удаление расписания (res null)",
+          error
+        );
         return res
           .status(500)
           .json({ message: "Ошибка при удалении расписания" });
@@ -259,8 +262,11 @@ const deleteSchedule = async (req, res) => {
       }
     }
   } catch (error) {
-    console.error("Ошибка при выполнение запроса", error);
-    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+    console.error(
+      "Ошибка при выполнение запроса на удаление расписания",
+      error
+    );
+    res.status(500).json({ message: "Ошибка при удаление расписания", error });
     throw error;
   }
 };
@@ -283,7 +289,10 @@ const updateUser = async (req, res) => {
 
       const result = await user.save();
       if (result === null) {
-        console.error("Ошибка при выполнение запроса", error);
+        console.error(
+          "Ошибка при выполнение запроса на обновление данных пользователя (res null)",
+          error
+        );
         res
           .status(500)
           .json({ message: "Ошибка при обновление данных о пользователе" });
@@ -292,8 +301,15 @@ const updateUser = async (req, res) => {
       }
     }
   } catch (error) {
-    console.error("Ошибка при выполнение запроса", error);
-    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+    console.error(
+      "Ошибка при выполнение запроса на обновление данных пользователя",
+      error
+    );
+    res.status(500).json({
+      message:
+        "Ошибка при выполнение запроса на обновление данных пользователя",
+      error,
+    });
   }
 };
 
@@ -309,17 +325,21 @@ const addCourse = async (req, res) => {
         title: title,
       });
       if (result === null) {
-        console.error("Ошибка при выполнение запроса", error);
-        return res
-          .status(500)
-          .json({ message: "Ошибка при добавления расписания" });
+        console.error(
+          "Ошибка при выполнение запроса при добавления курса (res null)",
+          error
+        );
+        return res.status(500).json({ message: "Ошибка при добавления курса" });
       } else {
         res.status(200).json({ result });
       }
     }
   } catch (error) {
-    console.error("Ошибка при выполнение запроса", error);
-    res.status(500).json({ message: "Ошибка при выполнение запроса", error });
+    console.error("Ошибка при выполнение запроса на добавление курса", error);
+    res.status(500).json({
+      message: "Ошибка при выполнение запроса на добавление курса",
+      error,
+    });
   }
 };
 
