@@ -16,7 +16,9 @@ const {
 
 const {
   addCourse,
+  updateTitleCourse,
   getAllCourse,
+  addUserInCourse,
 } = require("../controllers/course_controllers");
 
 const router = express.Router();
@@ -40,5 +42,9 @@ router.post("/add_free_schedule", addFreeSchedule);
 router.post("/delete_schedule", deleteSchedule);
 
 router.post("/add_course", addCourse);
+
+router.post("/update_title_course", updateTitleCourse);
+
+router.post("/add_user_in_course", addUserInCourse);
 
 module.exports = router;

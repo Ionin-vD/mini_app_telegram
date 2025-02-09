@@ -196,6 +196,7 @@ module.exports = {
   Progress,
   Courses,
   ThemesOfCourses,
+  CoursesOfUsers,
 };
 // const SurveyTopics = sequelize.define(
 //   "survey_topics",
