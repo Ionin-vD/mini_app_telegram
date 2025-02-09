@@ -17,7 +17,7 @@ const {
 const addFreeSchedule = async (req, res) => {
   const { date, time, course_id } = req.body;
   try {
-    if (date === null || date === time || course_id === null) {
+    if (date === null && date === time && course_id === null) {
       return res.status(501).json({ message: "body is null" });
     } else {
       const result = await Schedule.create({
