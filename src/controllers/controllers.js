@@ -176,7 +176,16 @@ const getFreeSchedule = async (req, res) => {
 
 const getAllCourse = async (req, res) => {
   try {
-    const result = await Courses.findAll();
+    const result = await Courses.findAll({
+      attributes: ["id", "admin_id", "title"],
+      include: [
+        {
+          model: Users,
+          as: "admin",
+          attributes: ["fio"],
+        },
+      ],
+    });
     if (result === null) {
       res.status(100).json({ message: "courses is null" });
     } else {
