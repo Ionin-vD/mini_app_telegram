@@ -73,7 +73,7 @@ const checkAuthUser = async (req, res) => {
       if (!result.isAuth) {
         return res.status(200).json({ message: "Пользователь не авторизован" });
       } else {
-        res.status(200).json({ result });
+        return res.status(200).json({ result });
       }
     }
   } catch (error) {
