@@ -18,7 +18,7 @@ const addFreeSchedule = async (req, res) => {
   const { date, time, course_id } = req.body;
   try {
     if (date === null || date === time || course_id === null) {
-      return res.status(201).json({ message: "body is null" });
+      return res.status(501).json({ message: "body is null" });
     } else {
       const result = await Schedule.create({
         user_id: null,
@@ -33,7 +33,7 @@ const addFreeSchedule = async (req, res) => {
           error
         );
         return res
-          .status(500)
+          .status(501)
           .json({ message: "Ошибка при добавление свободного расписания" });
       } else {
         res.status(200).json({ result });
@@ -50,7 +50,7 @@ const deleteSchedule = async (req, res) => {
   const { id } = req.body;
   try {
     if (id === null) {
-      return res.status(201).json({ message: "body is null" });
+      return res.status(501).json({ message: "body is null" });
     } else {
       const result = await Schedule.destroy({
         where: {
@@ -64,7 +64,7 @@ const deleteSchedule = async (req, res) => {
           error
         );
         return res
-          .status(500)
+          .status(501)
           .json({ message: "Ошибка при удалении расписания" });
       } else {
         res.status(200).json({ result });
@@ -95,7 +95,7 @@ const getAllSchedules = async (req, res) => {
       ],
     });
     if (result === null) {
-      res.status(100).json({ message: "schedules is null" });
+      res.status(501).json({ message: "schedules is null" });
     } else {
       res.status(200).json({ result });
     }
@@ -128,7 +128,7 @@ const getFreeSchedule = async (req, res) => {
       ],
     });
     if (result === null) {
-      res.status(100).json({ message: "free schedules is null" });
+      res.status(501).json({ message: "free schedules is null" });
     } else {
       res.status(200).json({ result });
     }

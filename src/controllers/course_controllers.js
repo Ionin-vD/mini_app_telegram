@@ -27,7 +27,7 @@ const getAllCourse = async (req, res) => {
       ],
     });
     if (result === null) {
-      res.status(100).json({ message: "courses is null" });
+      res.status(501).json({ message: "courses is null" });
     } else {
       res.status(200).json({ result });
     }
@@ -47,7 +47,7 @@ const addCourse = async (req, res) => {
 
   try {
     if (id === 1) {
-      return res.status(201).json({ message: "wrong body" });
+      return res.status(501).json({ message: "wrong body" });
     } else {
       const result = await Courses.create({
         admin_id: id,
@@ -58,7 +58,7 @@ const addCourse = async (req, res) => {
           "Ошибка при выполнение запроса при добавления курса (res null)",
           error
         );
-        return res.status(500).json({ message: "Ошибка при добавления курса" });
+        return res.status(501).json({ message: "Ошибка при добавления курса" });
       } else {
         res.status(200).json({ result });
       }
