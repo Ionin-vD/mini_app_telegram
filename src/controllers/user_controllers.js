@@ -67,13 +67,15 @@ const checkAuthUser = async (req, res) => {
 
   try {
     if (chat_id === null) {
-      return res.status(201).json({ message: "body is null" });
+      return res.status(201).json({ success: false, message: "body is null" });
     } else {
       const result = await findUserByChatId(chat_id);
       if (!result.isAuth) {
-        return res.status(200).json({ message: "Пользователь не авторизован" });
+        return res
+          .status(500)
+          .json({ success: false, message: "Пользователь не авторизован" });
       } else {
-        return res.status(200).json({ result });
+        return res.status(200).json({ success: true, result });
       }
     }
   } catch (error) {
