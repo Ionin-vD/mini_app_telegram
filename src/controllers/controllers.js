@@ -45,8 +45,25 @@ const findUserByChatId = async (chat_id) => {
   }
 };
 
+const createUser = async (chat_id, fio) => {
+  try {
+    const result = await Users.create({
+      chat_id,
+      fio,
+      isAdmin: false,
+      isAuth: true,
+      isDeleted: false,
+    });
+    return result;
+  } catch (error) {
+    console.error("Ошибка при создании пользователя: (снаружи)", error);
+    throw error;
+  }
+};
+
 module.exports = {
   registerUserBot,
   checkStart,
   findUserByChatId,
+  createUser,
 };
