@@ -138,9 +138,71 @@ const addUserInCourse = async (req, res) => {
   }
 };
 
+const addThemeInCourse = async (req, res) => {
+  const { title, course_id } = req.body;
+
+  try {
+    const result = await ThemesOfCourses.create({
+      title: title,
+      course_id: course_id,
+    });
+    if (result === null) {
+      console.error(
+        "Ошибка при выполнение запроса при добавления темы на курс (res null)",
+        error
+      );
+      return res
+        .status(501)
+        .json({ message: "Ошибка при добавления темы на курс" });
+    } else {
+      res.status(200).json({ result });
+    }
+  } catch (error) {
+    console.error(
+      "Ошибка при выполнение запроса на добавления темы на курс",
+      error
+    );
+    res.status(500).json({
+      message: "Ошибка при выполнение запроса на добавления темы на курс",
+      error,
+    });
+  }
+};
+
+const getAllThemesInCourses = async (req, res) => {
+  const { course_id } = req.body;
+  try {
+    const result = await ThemesOfCourses.findAll({
+      where: { course_id },
+      attributes: ["id", "title", "course_id"],
+      include: [
+        {
+          model: Courses,
+          attributes: ["title"],
+        },
+      ],
+    });
+    if (result === null) {
+      res.status(501).json({ message: "themes is null" });
+    } else {
+      res.status(200).json({ result });
+    }
+  } catch (error) {
+    console.error(
+      "Ошибка при выполнение запроса на получение всех тем на курсе",
+      error
+    );
+    res
+      .status(500)
+      .json({ message: "Ошибка при получение всех тем на курсе", error });
+  }
+};
+
 module.exports = {
   addCourse,
   getAllCourse,
   updateTitleCourse,
   addUserInCourse,
+  addThemeInCourse,
+  getAllThemesInCourses,
 };
