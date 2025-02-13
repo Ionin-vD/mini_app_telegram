@@ -21,6 +21,9 @@ const {
   addUserInCourse,
   addThemeInCourse,
   getAllThemesInCourses,
+  updateThemeInCourse,
+  changeAuthUserInCourse,
+  getAllTUsersInCourses,
 } = require("../controllers/course_controllers");
 
 const router = express.Router();
@@ -48,6 +51,8 @@ router.get("/get_all_courses", getAllCourse);
 
 router.post("/get_all_themes_in_course", getAllThemesInCourses);
 
+router.post("/get_all_users_in_course", getAllTUsersInCourses);
+
 router.post("/add_course", addCourse);
 
 router.post("/update_title_course", updateTitleCourse);
@@ -55,5 +60,9 @@ router.post("/update_title_course", updateTitleCourse);
 router.post("/add_user_in_course", addUserInCourse);
 
 router.post("/add_theme_in_course", addThemeInCourse);
+
+router.post("/update_theme_in_course", updateThemeInCourse);
+
+router.post("/change_auth_user_in_course", changeAuthUserInCourse);
 
 module.exports = router;

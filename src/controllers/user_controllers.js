@@ -21,9 +21,9 @@ const getAllUsers = async (req, res) => {
       where: { id: { [Op.ne]: 1 } },
     });
     if (result === null) {
-      res.status(501).json({ message: "users is null" });
+      return res.status(501).json({ message: "users is null" });
     } else {
-      res.status(200).json({ result });
+      return res.status(200).json({ result });
     }
   } catch (error) {
     console.error(
@@ -45,9 +45,9 @@ const getAllUsersIsDelete = async (req, res) => {
       where: { id: { [Op.ne]: 1 } },
     });
     if (result === null) {
-      res.status(501).json({ message: "users is null" });
+      return res.status(501).json({ message: "users is null" });
     } else {
-      res.status(200).json({ result });
+      return res.status(200).json({ result });
     }
   } catch (error) {
     console.error(
@@ -81,7 +81,7 @@ const checkAuthUser = async (req, res) => {
       "Ошибка при выполнение запроса авторизации пользователя",
       error
     );
-    res
+    return res
       .status(500)
       .json({ message: "Ошибка при авторизации пользователя", error });
   }
@@ -94,26 +94,20 @@ const updateUser = async (req, res) => {
     if (id === 1) {
       return res.status(501).json({ message: "wrong body" });
     } else {
-      const user = await Users.findOne({
-        where: { id },
-        attributes: ["id", "fio", "isAdmin", "isAuth", "isDeleted"],
-      });
-      user.fio = fio;
-      user.isAdmin = isAdmin;
-      user.isAuth = isAuth;
-      user.isDeleted = isDeleted;
-
-      const result = await user.save();
-      if (result === null) {
+      const [result] = await Users.update(
+        { fio, isAdmin, isAuth, isDeleted },
+        { where: { id } }
+      );
+      if (result === 0) {
         console.error(
           "Ошибка при выполнение запроса на обновление данных пользователя (res null)",
           error
         );
-        res
+        return res
           .status(501)
           .json({ message: "Ошибка при обновление данных о пользователе" });
       } else {
-        res.status(200).json({ result });
+        return res.status(200).json({ result });
       }
     }
   } catch (error) {
@@ -121,7 +115,7 @@ const updateUser = async (req, res) => {
       "Ошибка при выполнение запроса на обновление данных пользователя",
       error
     );
-    res.status(500).json({
+    return res.status(500).json({
       message:
         "Ошибка при выполнение запроса на обновление данных пользователя",
       error,
