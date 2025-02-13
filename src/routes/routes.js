@@ -12,6 +12,7 @@ const {
   getFreeSchedule,
   addFreeSchedule,
   deleteSchedule,
+  getAllScheduleIsCourse,
 } = require("../controllers/schedule_controllers");
 
 const {
@@ -51,6 +52,8 @@ router.get("/get_free_schedule", getFreeSchedule);
 router.post("/add_free_schedule", addFreeSchedule);
 
 router.post("/delete_schedule", deleteSchedule);
+
+router.post("/get_all_schedule_is_course", getAllScheduleIsCourse);
 
 //course
 router.get("/get_all_courses", getAllCourse);

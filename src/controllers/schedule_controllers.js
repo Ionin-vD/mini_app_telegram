@@ -145,9 +145,44 @@ const getFreeSchedule = async (req, res) => {
   }
 };
 
+const getAllScheduleIsCourse = async (req, res) => {
+  const { course_id } = req.body;
+  try {
+    const result = await Schedule.findAll({
+      where: { course_id: course_id },
+      include: [
+        {
+          model: Users,
+          attributes: ["fio"],
+        },
+        {
+          model: ThemesOfCourses,
+          attributes: ["title"],
+        },
+      ],
+    });
+    if (result === null) {
+      return res.status(501).json({ message: "free schedules is null" });
+    } else {
+      return res.status(200).json({ result });
+    }
+  } catch (error) {
+    console.error(
+      "Ошибка при выполнение запроса на получение всего расписания",
+      error
+    );
+    res.status(500).json({
+      message: "Ошибка при получение всего расписания",
+      error,
+    });
+    throw error;
+  }
+};
+
 module.exports = {
   getAllSchedules,
   getFreeSchedule,
   addFreeSchedule,
   deleteSchedule,
+  getAllScheduleIsCourse,
 };
