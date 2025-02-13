@@ -24,6 +24,12 @@ const {
   updateThemeInCourse,
   changeAuthUserInCourse,
   getAllTUsersInCourses,
+  checkThemeIsBusy,
+  deleteTheme,
+  getAllQuestionsOfThemes,
+  updateQuestionInTheme,
+  deleteQuestion,
+  addQuestionInTheme,
 } = require("../controllers/course_controllers");
 
 const router = express.Router();
@@ -64,5 +70,17 @@ router.post("/add_theme_in_course", addThemeInCourse);
 router.post("/update_theme_in_course", updateThemeInCourse);
 
 router.post("/change_auth_user_in_course", changeAuthUserInCourse);
+
+router.post("/check_themes_is_busy", checkThemeIsBusy);
+
+router.post("/delete_theme", deleteTheme);
+
+router.post("/get_all_question_of_theme", getAllQuestionsOfThemes);
+
+router.post("/update_question_in_theme", updateQuestionInTheme);
+
+router.post("/delete_question", deleteQuestion);
+
+router.post("/add_question_in_theme", addQuestionInTheme);
 
 module.exports = router;
