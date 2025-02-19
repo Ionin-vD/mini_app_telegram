@@ -20,7 +20,7 @@ const getAllUsers = async (req, res) => {
       attributes: ["id", "chat_id", "fio", "isAdmin", "isAuth"],
       where: { id: { [Op.ne]: 1 } },
     });
-    if (result === null) {
+    if (result === null || result.length === 0) {
       return res.status(501).json({ message: "users is null" });
     } else {
       return res.status(200).json({ result });
@@ -44,7 +44,7 @@ const getAllUsersIsDelete = async (req, res) => {
       attributes: ["id", "chat_id", "fio", "isAdmin", "isAuth", "isDeleted"],
       where: { id: { [Op.ne]: 1 } },
     });
-    if (result === null) {
+    if (result === null || result.length === 0 || result.length === 0) {
       return res.status(501).json({ message: "users is null" });
     } else {
       return res.status(200).json({ result });

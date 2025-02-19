@@ -11,12 +11,10 @@ const { Op } = require("sequelize");
 const checkStart = async (chat_id) => {
   try {
     const result = await findUserByChatId(chat_id);
-    if (result) {
-      return 201;
-    }
-    return 200;
+    return result ? 201 : 200;
   } catch (error) {
-    return 200;
+    console.error("Ошибка в checkStart:", error);
+    return 500;
   }
 };
 
