@@ -165,8 +165,8 @@ const Schedule = sequelize.define(
   "schedule",
   {
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
-    user_id: { type: DataTypes.BIGINT, allowNull: false },
-    theme_id: { type: DataTypes.BIGINT, allowNull: false },
+    user_id: { type: DataTypes.BIGINT, allowNull: true },
+    theme_id: { type: DataTypes.BIGINT, allowNull: true },
     course_id: { type: DataTypes.BIGINT, allowNull: false },
     date: { type: DataTypes.DATEONLY, allowNull: false },
     time: { type: DataTypes.TIME, allowNull: false },
