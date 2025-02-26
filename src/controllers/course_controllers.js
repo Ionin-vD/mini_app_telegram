@@ -384,7 +384,6 @@ const getAllQuestionsOfThemes = async (req, res) => {
       return res.status(501).json({ message: "body is null" });
     } else {
       const result = await QuestionsOfThemes.findAll({
-        where: { id },
         attributes: ["id", "title", "theme_id"],
         include: [
           {
