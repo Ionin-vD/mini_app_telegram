@@ -27,7 +27,7 @@ const addFreeSchedule = async (req, res) => {
         date: date,
         time: time,
       });
-      if (result === null) {
+      if (result === null || result.length === 0) {
         console.error(
           "Ошибка при выполнение запроса на добавление свободного расписания (res null)",
           error
@@ -58,7 +58,7 @@ const deleteSchedule = async (req, res) => {
           user_id: null,
         },
       });
-      if (result === null) {
+      if (result === null || result.length === 0) {
         console.error(
           "Ошибка при выполнение запроса на удаление расписания (res null)",
           error
@@ -94,7 +94,7 @@ const getAllSchedules = async (req, res) => {
         },
       ],
     });
-    if (result === null) {
+    if (result === null || result.length === 0) {
       return res.status(501).json({ message: "schedules is null" });
     } else {
       return res.status(200).json({ result });
@@ -127,7 +127,7 @@ const getFreeSchedule = async (req, res) => {
         },
       ],
     });
-    if (result === null) {
+    if (result === null || result.length === 0) {
       return res.status(501).json({ message: "free schedules is null" });
     } else {
       return res.status(200).json({ result });
@@ -161,7 +161,7 @@ const getAllScheduleIsCourse = async (req, res) => {
         },
       ],
     });
-    if (result === null) {
+    if (result === null || result.length === 0) {
       return res.status(501).json({ message: "free schedules is null" });
     } else {
       return res.status(200).json({ result });

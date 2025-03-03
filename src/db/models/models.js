@@ -17,7 +17,12 @@ const Users = sequelize.define(
   "users",
   {
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
-    chat_id: { type: DataTypes.BIGINT, unique: true, allowNull: false },
+    chat_id: {
+      type: DataTypes.BIGINT,
+      unique: true,
+      allowNull: false,
+      index: true,
+    },
     fio: { type: DataTypes.STRING, allowNull: false },
     isAdmin: { type: DataTypes.BOOLEAN, defaultValue: false },
     isAuth: { type: DataTypes.BOOLEAN, defaultValue: false },
@@ -36,26 +41,84 @@ const Courses = sequelize.define(
   { timestamps: false }
 );
 
+const CoursesOfUsers = sequelize.define(
+  "courses_of_users",
+  {
+    id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
+    user_id: { type: DataTypes.BIGINT, allowNull: false, index: true },
+    course_id: { type: DataTypes.BIGINT, allowNull: false, index: true },
+    auth_in_course: { type: DataTypes.BOOLEAN, defaultValue: false },
+  },
+  {
+    timestamps: false,
+    indexes: [{ unique: true, fields: ["user_id", "course_id"] }],
+  }
+);
+
+Users.belongsToMany(Courses, {
+  through: CoursesOfUsers,
+  foreignKey: "user_id",
+  otherKey: "course_id",
+  as: "courses",
+  onDelete: "CASCADE",
+});
+Courses.belongsToMany(Users, {
+  through: CoursesOfUsers,
+  foreignKey: "course_id",
+  otherKey: "user_id",
+  as: "users",
+  onDelete: "CASCADE",
+});
+
+Courses.belongsTo(Users, {
+  foreignKey: "admin_id",
+  as: "admin",
+  onDelete: "CASCADE",
+});
+Users.hasMany(Courses, {
+  foreignKey: "admin_id",
+  as: "adminCourses",
+  onDelete: "CASCADE",
+});
+
+CoursesOfUsers.belongsTo(Users, {
+  foreignKey: "user_id",
+  as: "user",
+  onDelete: "CASCADE",
+});
+Users.hasMany(CoursesOfUsers, {
+  foreignKey: "user_id",
+  onDelete: "CASCADE",
+});
+
 const FeedBackOfCourse = sequelize.define(
   "feedback_of_course",
   {
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
     course_id: { type: DataTypes.BIGINT, allowNull: false },
+    user_id: { type: DataTypes.BIGINT, allowNull: false },
     feedback: { type: DataTypes.STRING, allowNull: false },
   },
   { timestamps: false }
 );
 
-const CoursesOfUsers = sequelize.define(
-  "courses_of_users",
-  {
-    id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
-    user_id: { type: DataTypes.BIGINT, allowNull: false },
-    course_id: { type: DataTypes.BIGINT, allowNull: false },
-    auth_in_course: { type: DataTypes.BOOLEAN, defaultValue: false },
-  },
-  { timestamps: false, primaryKey: ["user_id", "course_id"] }
-);
+FeedBackOfCourse.belongsTo(Users, {
+  foreignKey: "user_id",
+  onDelete: "SET NULL",
+});
+Users.hasMany(FeedBackOfCourse, {
+  foreignKey: "user_id",
+  onDelete: "SET NULL",
+});
+
+FeedBackOfCourse.belongsTo(Courses, {
+  foreignKey: "course_id",
+  onDelete: "SET NULL",
+});
+Courses.hasMany(FeedBackOfCourse, {
+  foreignKey: "course_id",
+  onDelete: "SET NULL",
+});
 
 const ThemesOfCourses = sequelize.define(
   "themes_of_courses",
@@ -64,8 +127,20 @@ const ThemesOfCourses = sequelize.define(
     title: { type: DataTypes.STRING, allowNull: false },
     course_id: { type: DataTypes.BIGINT, allowNull: false },
   },
-  { timestamps: false }
+  {
+    timestamps: false,
+    indexes: [{ unique: true, fields: ["title", "course_id"] }],
+  }
 );
+
+ThemesOfCourses.belongsTo(Courses, {
+  foreignKey: "course_id",
+  onDelete: "CASCADE",
+});
+Courses.hasMany(ThemesOfCourses, {
+  foreignKey: "course_id",
+  onDelete: "CASCADE",
+});
 
 const QuestionsOfThemes = sequelize.define(
   "questions_of_themes",
@@ -77,18 +152,42 @@ const QuestionsOfThemes = sequelize.define(
   { timestamps: false }
 );
 
+QuestionsOfThemes.belongsTo(ThemesOfCourses, {
+  foreignKey: "theme_id",
+  onDelete: "CASCADE",
+});
+ThemesOfCourses.hasMany(QuestionsOfThemes, {
+  foreignKey: "theme_id",
+  onDelete: "CASCADE",
+});
+
 const Schedule = sequelize.define(
   "schedule",
   {
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
-    user_id: { type: DataTypes.BIGINT, allowNull: false },
-    theme_id: { type: DataTypes.BIGINT, allowNull: false },
+    user_id: { type: DataTypes.BIGINT, allowNull: true },
+    theme_id: { type: DataTypes.BIGINT, allowNull: true },
     course_id: { type: DataTypes.BIGINT, allowNull: false },
     date: { type: DataTypes.DATEONLY, allowNull: false },
     time: { type: DataTypes.TIME, allowNull: false },
   },
   { timestamps: false }
 );
+
+Schedule.belongsTo(Users, { foreignKey: "user_id", onDelete: "CASCADE" });
+Users.hasMany(Schedule, { foreignKey: "user_id", onDelete: "CASCADE" });
+
+Schedule.belongsTo(ThemesOfCourses, {
+  foreignKey: "theme_id",
+  onDelete: "CASCADE",
+});
+ThemesOfCourses.hasMany(Schedule, {
+  foreignKey: "theme_id",
+  onDelete: "CASCADE",
+});
+
+Schedule.belongsTo(Courses, { foreignKey: "course_id", onDelete: "CASCADE" });
+Courses.hasMany(Schedule, { foreignKey: "course_id", onDelete: "CASCADE" });
 
 const Progress = sequelize.define(
   "progress",
@@ -101,59 +200,29 @@ const Progress = sequelize.define(
   { timestamps: false }
 );
 
-// Установка связей между таблицами (не изменены, но ключи теперь BIGINT)
-Courses.belongsTo(Users, { foreignKey: "admin_id", as: "admin" });
-Users.hasMany(Courses, { foreignKey: "admin_id", as: "adminCourses" });
-FeedBackOfCourse.belongsTo(Courses, { foreignKey: "course_id" });
-Courses.hasMany(FeedBackOfCourse, { foreignKey: "course_id" });
-Users.belongsToMany(Courses, {
-  through: CoursesOfUsers,
-  foreignKey: "user_id",
-  otherKey: "course_id",
-  as: "courses",
+Progress.belongsTo(Users, { foreignKey: "user_id", onDelete: "CASCADE" });
+Users.hasMany(Progress, { foreignKey: "user_id", onDelete: "CASCADE" });
+
+Progress.belongsTo(ThemesOfCourses, {
+  foreignKey: "theme_id",
+  onDelete: "CASCADE",
 });
-Courses.belongsToMany(Users, {
-  through: CoursesOfUsers,
-  foreignKey: "course_id",
-  otherKey: "user_id",
-  as: "users",
-});
-ThemesOfCourses.belongsTo(Courses, { foreignKey: "course_id" });
-Courses.hasMany(ThemesOfCourses, { foreignKey: "course_id" });
-QuestionsOfThemes.belongsTo(ThemesOfCourses, { foreignKey: "theme_id" });
-ThemesOfCourses.hasMany(QuestionsOfThemes, { foreignKey: "theme_id" });
-Schedule.belongsTo(Users, { foreignKey: "user_id" });
-Users.hasMany(Schedule, { foreignKey: "user_id" });
-Schedule.belongsTo(ThemesOfCourses, { foreignKey: "theme_id" });
-ThemesOfCourses.hasMany(Schedule, { foreignKey: "theme_id" });
-Schedule.belongsTo(Courses, { foreignKey: "course_id" });
-Courses.hasMany(Schedule, { foreignKey: "course_id" });
-Progress.belongsTo(Users, { foreignKey: "user_id" });
-Users.hasMany(Progress, { foreignKey: "user_id" });
-Progress.belongsTo(ThemesOfCourses, { foreignKey: "theme_id" });
-ThemesOfCourses.hasMany(Progress, { foreignKey: "theme_id" });
-CoursesOfUsers.belongsTo(Users, {
-  foreignKey: "user_id",
-  as: "user",
-});
-Users.hasMany(CoursesOfUsers, {
-  foreignKey: "user_id",
+ThemesOfCourses.hasMany(Progress, {
+  foreignKey: "theme_id",
+  onDelete: "CASCADE",
 });
 
 sequelize
   .sync({ force: false })
   .then(async () => {
-    const count = await Users.count();
-    if (count === 0) {
-      await Users.bulkCreate([
-        {
-          chat_id: process.env.CHAT_ID,
-          fio: "SUPER USER",
-          isAdmin: true,
-          isAuth: true,
-        },
-      ]);
-    }
+    await Users.findOrCreate({
+      where: { chat_id: process.env.CHAT_ID },
+      defaults: {
+        fio: "SUPER USER",
+        isAdmin: true,
+        isAuth: true,
+      },
+    });
   })
   .catch((err) => console.error("Ошибка синхронизации базы данных: ", err));
 
