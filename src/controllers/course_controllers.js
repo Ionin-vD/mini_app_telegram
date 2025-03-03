@@ -562,7 +562,7 @@ const getTitleThemeOfId = async (req, res) => {
         );
         return res.status(501).json({ message: "Ошибка при получение темы" });
       } else {
-        return res.status(200).json({ result });
+        return res.status(200).json(result);
       }
     }
   } catch (error) {
