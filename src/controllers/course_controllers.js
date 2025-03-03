@@ -31,7 +31,7 @@ const getAllCourse = async (req, res) => {
     if (result === null || result.length === 0) {
       return res.status(404).json({ message: "courses is null" });
     } else {
-      return res.status(200).json({ result });
+      return res.status(200).json(result);
     }
   } catch (error) {
     console.error(
