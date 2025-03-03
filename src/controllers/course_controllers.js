@@ -31,7 +31,7 @@ const getAllCourse = async (req, res) => {
     if (result === null || result.length === 0) {
       return res.status(404).json({ message: "courses is null" });
     } else {
-      return res.status(200).json(result);
+      return res.status(200).json({ result });
     }
   } catch (error) {
     console.error(
@@ -562,7 +562,7 @@ const getTitleThemeOfId = async (req, res) => {
         );
         return res.status(501).json({ message: "Ошибка при получение темы" });
       } else {
-        return res.status(200).json(result[0]);
+        return res.status(200).json({ result });
       }
     }
   } catch (error) {
