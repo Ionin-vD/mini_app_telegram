@@ -32,6 +32,7 @@ const {
   deleteQuestion,
   addQuestionInTheme,
   deleteCourse,
+  getTitleThemeOfId,
 } = require("../controllers/course_controllers");
 
 const router = express.Router();
@@ -88,5 +89,7 @@ router.post("/delete_question", deleteQuestion);
 router.post("/add_question_in_theme", addQuestionInTheme);
 
 router.post("/delete_course", deleteCourse);
+
+router.post("/get_title_theme_of_id", getTitleThemeOfId);
 
 module.exports = router;

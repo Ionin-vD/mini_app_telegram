@@ -543,6 +543,34 @@ const deleteCourse = async (req, res) => {
   }
 };
 
+const getTitleThemeOfId = async (req, res) => {
+  const { id } = req.body;
+  try {
+    if (id === null) {
+      return res.status(501).json({ message: "body is null" });
+    } else {
+      const result = await ThemesOfCourses.findAll({
+        where: {
+          id: id,
+        },
+      });
+      if (result === null || result.length === 0) {
+        console.error(
+          "Ошибка при выполнение запроса на удаление курса (res null)",
+          error
+        );
+        return res.status(501).json({ message: "Ошибка при удалении курса" });
+      } else {
+        return res.status(200).json({ result });
+      }
+    }
+  } catch (error) {
+    console.error("Ошибка при выполнение запроса на удаление курса", error);
+    res.status(500).json({ message: "Ошибка при удаление курса", error });
+    throw error;
+  }
+};
+
 module.exports = {
   addCourse,
   getAllCourse,
@@ -560,4 +588,5 @@ module.exports = {
   deleteQuestion,
   addQuestionInTheme,
   deleteCourse,
+  getTitleThemeOfId,
 };
