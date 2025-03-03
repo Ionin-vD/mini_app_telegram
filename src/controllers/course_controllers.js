@@ -553,20 +553,21 @@ const getTitleThemeOfId = async (req, res) => {
         where: {
           id: id,
         },
+        attributes: ["id", "title"],
       });
       if (result === null || result.length === 0) {
         console.error(
-          "Ошибка при выполнение запроса на удаление курса (res null)",
+          "Ошибка при выполнение запроса на получение темы (res null)",
           error
         );
-        return res.status(501).json({ message: "Ошибка при удалении курса" });
+        return res.status(501).json({ message: "Ошибка при получение темы" });
       } else {
-        return res.status(200).json({ result });
+        return res.status(200).json(result[0]);
       }
     }
   } catch (error) {
-    console.error("Ошибка при выполнение запроса на удаление курса", error);
-    res.status(500).json({ message: "Ошибка при удаление курса", error });
+    console.error("Ошибка при выполнение запроса на получение темы", error);
+    res.status(500).json({ message: "Ошибка при получение темы", error });
     throw error;
   }
 };
