@@ -146,7 +146,7 @@ const addUserInCourse = async (req, res) => {
         "Ошибка при выполнение запроса на добавления пользователя на курс",
       error,
     });
-    throw error;
+    //throw error;
   }
 };
 
