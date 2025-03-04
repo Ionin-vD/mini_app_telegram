@@ -1,7 +1,7 @@
 # Используем базовый образ Node.js
 FROM node:22
 
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y git postgresql-client
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
