@@ -14,8 +14,8 @@ RUN npm install
 
 # Копируем исходный код
 COPY . .
-COPY key.pem /app/key.pem
-COPY cert.pem /app/cert.pem
+COPY /etc/letsencrypt/live/pxmx-home.ddns.net/privkey.pem /app/key.pem
+COPY /etc/letsencrypt/live/pxmx-home.ddns.net/cert.pem /app/cert.pem
 
 # Указываем порт
 EXPOSE 3001
