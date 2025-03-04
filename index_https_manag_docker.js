@@ -30,6 +30,10 @@ const options = {
     "/etc/letsencrypt/live/pxmx-home.ddns.net/fullchain.pem"
   ),
 };
+// const options = {
+//   key: fs.readFileSync("/app/privkey.pem"),
+//   cert: fs.readFileSync("/app/fullchain.pem"),
+// };
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 app.use(cors());

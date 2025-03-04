@@ -10,8 +10,8 @@ while true; do
     git pull origin main
 
     echo "Перезапуск сервера..."
-    pkill -f index_https_manag.js
-    node index_https_manag.js &
+    pkill -f index_https_manag_docker.js
+    node index_https_manag_docker.js &
 
     sleep 60
 done

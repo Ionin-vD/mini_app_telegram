@@ -1,5 +1,5 @@
 const { Client } = require("pg");
-//require("dotenv").config({ path: "../../../.env" });
+require("dotenv").config({ path: "../../../.env" });
 
 const initDB = async () => {
   let client;
