@@ -329,21 +329,13 @@ const changeAuthUserInCourse = async (req, res) => {
         where: { user_id: id },
       });
 
-      if (!record) {
+      if (record === null || !record) {
         res.status(405).json({
           message:
             "Ошибка при выполнение запроса на обновление данных об auth юзера в теме",
         });
       }
-      console.log(record);
-      console.log(record.auth_in_course);
-      console.log(!record.auth_in_course);
-      console.log(newAuthInCourse);
       const newAuthInCourse = !record.auth_in_course;
-      console.log(record);
-      console.log(record.auth_in_course);
-      console.log(!record.auth_in_course);
-      console.log(newAuthInCourse);
 
       const result = await CoursesOfUsers.update(
         { auth_in_course: newAuthInCourse },
