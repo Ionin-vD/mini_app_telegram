@@ -224,7 +224,7 @@ ThemesOfCourses.hasMany(Progress, {
 });
 
 sequelize
-  .sync({ force: false })
+  .sync({ force: true })
   .then(async () => {
     await Users.findOrCreate({
       where: { chat_id: process.env.CHAT_ID },
