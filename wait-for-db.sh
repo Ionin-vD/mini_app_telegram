@@ -7,3 +7,6 @@ until pg_isready -h db -p 5432 -U postgres; do
 done
 
 echo "PostgreSQL готов!"
+
+# Передача управления следующей команде
+exec "$@"
