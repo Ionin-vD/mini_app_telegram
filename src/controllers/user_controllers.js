@@ -21,7 +21,7 @@ const getAllUsers = async (req, res) => {
       where: { id: { [Op.ne]: 1 } },
     });
     if (result === null || result.length === 0) {
-      return res.status(501).json({ message: "users is null" });
+      return res.status(404).json({ message: "users is null" });
     } else {
       return res.status(200).json({ result });
     }
@@ -45,7 +45,7 @@ const getAllUsersIsDelete = async (req, res) => {
       where: { id: { [Op.ne]: 1 } },
     });
     if (result === null || result.length === 0 || result.length === 0) {
-      return res.status(501).json({ message: "users is null" });
+      return res.status(404).json({ message: "users is null" });
     } else {
       return res.status(200).json({ result });
     }
@@ -67,11 +67,11 @@ const checkAuthUser = async (req, res) => {
 
   try {
     if (chat_id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const result = await findUserByChatId(chat_id);
       if (!result.isAuth) {
-        return res.status(501).json({ message: "Пользователь не авторизован" });
+        return res.status(405).json({ message: "Пользователь не авторизован" });
       } else {
         return res.status(200).json({ result });
       }
@@ -92,7 +92,7 @@ const updateUser = async (req, res) => {
 
   try {
     if (id === 1) {
-      return res.status(501).json({ message: "wrong body" });
+      return res.status(404).json({ message: "wrong body" });
     } else {
       const [result] = await Users.update(
         { fio, isAdmin, isAuth, isDeleted },
@@ -104,7 +104,7 @@ const updateUser = async (req, res) => {
           error
         );
         return res
-          .status(501)
+          .status(405)
           .json({ message: "Ошибка при обновление данных о пользователе" });
       } else {
         return res.status(200).json({ result });

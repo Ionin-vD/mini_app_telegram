@@ -24,7 +24,7 @@ const {
   getAllThemesInCourses,
   updateThemeInCourse,
   changeAuthUserInCourse,
-  getAllTUsersInCourses,
+  getAllUsersInCourses,
   checkThemeIsBusy,
   deleteTheme,
   getAllQuestionsOfThemes,
@@ -62,7 +62,7 @@ router.get("/get_all_courses", getAllCourse);
 
 router.post("/get_all_themes_in_course", getAllThemesInCourses);
 
-router.post("/get_all_users_in_course", getAllTUsersInCourses);
+router.post("/get_all_users_in_course", getAllUsersInCourses);
 
 router.post("/add_course", addCourse);
 

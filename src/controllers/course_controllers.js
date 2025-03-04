@@ -50,7 +50,7 @@ const addCourse = async (req, res) => {
 
   try {
     if (id === null || title === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const existingRecord = await Courses.findOne({
         where: {
@@ -60,7 +60,7 @@ const addCourse = async (req, res) => {
       });
 
       if (existingRecord) {
-        return res.status(501).json({ message: "Такой курс уже существует" });
+        return res.status(405).json({ message: "Такой курс уже существует" });
       }
       const result = await Courses.create({
         admin_id: id,
@@ -71,7 +71,7 @@ const addCourse = async (req, res) => {
           "Ошибка при выполнение запроса при добавления курса (res null)",
           error
         );
-        return res.status(501).json({ message: "Ошибка при добавления курса" });
+        return res.status(405).json({ message: "Ошибка при добавления курса" });
       } else {
         return res.status(200).json({ result });
       }
@@ -91,7 +91,7 @@ const updateTitleCourse = async (req, res) => {
 
   try {
     if (title === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const result = await Courses.update(
         { title },
@@ -103,7 +103,7 @@ const updateTitleCourse = async (req, res) => {
           error
         );
         return res
-          .status(501)
+          .status(405)
           .json({ message: "Ошибка при обновление названия курса" });
       } else {
         return res.status(200).json({ result });
@@ -127,7 +127,7 @@ const addUserInCourse = async (req, res) => {
 
   try {
     if (user_id === null || course_id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const existingRecord = await CoursesOfUsers.findOne({
         where: {
@@ -138,7 +138,7 @@ const addUserInCourse = async (req, res) => {
 
       if (existingRecord) {
         return res
-          .status(501)
+          .status(405)
           .json({ message: "Пользователь уже записан на этот курс" });
       }
       const result = await CoursesOfUsers.create({
@@ -152,7 +152,7 @@ const addUserInCourse = async (req, res) => {
           error
         );
         return res
-          .status(501)
+          .status(405)
           .json({ message: "Ошибка при добавления пользователя на курс" });
       } else {
         return res.status(200).json({ result });
@@ -177,7 +177,7 @@ const addThemeInCourse = async (req, res) => {
 
   try {
     if (title === null || course_id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const existingRecord = await ThemesOfCourses.findOne({
         where: {
@@ -187,7 +187,7 @@ const addThemeInCourse = async (req, res) => {
       });
 
       if (existingRecord) {
-        return res.status(501).json({ message: "Такая тема уже существует" });
+        return res.status(405).json({ message: "Такая тема уже существует" });
       }
       const result = await ThemesOfCourses.create({
         title: title,
@@ -199,7 +199,7 @@ const addThemeInCourse = async (req, res) => {
           error
         );
         return res
-          .status(501)
+          .status(405)
           .json({ message: "Ошибка при добавления темы на курс" });
       } else {
         return res.status(200).json({ result });
@@ -222,7 +222,7 @@ const getAllThemesInCourses = async (req, res) => {
   const { course_id } = req.body;
   try {
     if (course_id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const result = await ThemesOfCourses.findAll({
         where: { course_id },
@@ -235,7 +235,7 @@ const getAllThemesInCourses = async (req, res) => {
         ],
       });
       if (result === null || result.length === 0) {
-        return res.status(501).json({ message: "themes is null" });
+        return res.status(404).json({ message: "themes is null" });
       } else {
         return res.status(200).json({ result });
       }
@@ -252,11 +252,11 @@ const getAllThemesInCourses = async (req, res) => {
   }
 };
 
-const getAllTUsersInCourses = async (req, res) => {
+const getAllUsersInCourses = async (req, res) => {
   const { course_id } = req.body;
   try {
     if (course_id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const result = await CoursesOfUsers.findAll({
         where: { course_id },
@@ -270,7 +270,7 @@ const getAllTUsersInCourses = async (req, res) => {
         ],
       });
       if (result === null || result.length === 0) {
-        return res.status(501).json({ message: "users is null" });
+        return res.status(404).json({ message: "users is null" });
       } else {
         return res.status(200).json({ result });
       }
@@ -291,7 +291,7 @@ const updateThemeInCourse = async (req, res) => {
   const { id, title } = req.body;
   try {
     if (id === null || title === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const result = await ThemesOfCourses.update({ title }, { where: { id } });
       if (result === null || result.length === 0) {
@@ -300,7 +300,7 @@ const updateThemeInCourse = async (req, res) => {
           error
         );
         return res
-          .status(501)
+          .status(405)
           .json({ message: "Ошибка при обновление данных о теме" });
       } else {
         return res.status(200).json({ result });
@@ -323,14 +323,14 @@ const changeAuthUserInCourse = async (req, res) => {
   const { id } = req.body;
   try {
     if (id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const record = await CoursesOfUsers.findOne({
         where: { user_id: id },
       });
 
       if (!record) {
-        res.status(501).json({
+        res.status(405).json({
           message:
             "Ошибка при выполнение запроса на обновление данных об auth юзера в теме",
         });
@@ -346,7 +346,7 @@ const changeAuthUserInCourse = async (req, res) => {
           "Ошибка при выполнение запроса на обновление данных auth юзера в теме (res null)",
           error
         );
-        return res.status(501).json({
+        return res.status(405).json({
           message: "Ошибка при обновление данных об auth юзера в теме",
         });
       } else {
@@ -371,7 +371,7 @@ const checkThemeIsBusy = async (req, res) => {
   const { id } = req.body;
   try {
     if (id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const relatedRecords = await Promise.all([
         QuestionsOfThemes.count({ where: { theme_id: id } }),
@@ -397,7 +397,7 @@ const deleteTheme = async (req, res) => {
   const { id } = req.body;
   try {
     if (id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       await QuestionsOfThemes.destroy({ where: { theme_id: id } });
       await Schedule.destroy({ where: { theme_id: id } });
@@ -425,7 +425,7 @@ const getAllQuestionsOfThemes = async (req, res) => {
   const { id } = req.body;
   try {
     if (id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const result = await QuestionsOfThemes.findAll({
         attributes: ["id", "title", "theme_id"],
@@ -437,7 +437,7 @@ const getAllQuestionsOfThemes = async (req, res) => {
         ],
       });
       if (result === null || result.length === 0) {
-        return res.status(501).json({ message: "question is null" });
+        return res.status(404).json({ message: "question is null" });
       } else {
         return res.status(200).json({ result });
       }
@@ -458,7 +458,7 @@ const updateQuestionInTheme = async (req, res) => {
   const { id, title } = req.body;
   try {
     if (id === null || title === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const result = await QuestionsOfThemes.update(
         { title },
@@ -470,7 +470,7 @@ const updateQuestionInTheme = async (req, res) => {
           error
         );
         return res
-          .status(501)
+          .status(405)
           .json({ message: "Ошибка при обновление данных о вопросе" });
       } else {
         return res.status(200).json({ result });
@@ -493,7 +493,7 @@ const deleteQuestion = async (req, res) => {
   const { id } = req.body;
   try {
     if (id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const result = await QuestionsOfThemes.destroy({
         where: {
@@ -505,7 +505,7 @@ const deleteQuestion = async (req, res) => {
           "Ошибка при выполнение запроса на удаление вопроса (res null)",
           error
         );
-        return res.status(501).json({ message: "Ошибка при удалении вопроса" });
+        return res.status(405).json({ message: "Ошибка при удалении вопроса" });
       } else {
         return res.status(200).json({ result });
       }
@@ -521,12 +521,12 @@ const addQuestionInTheme = async (req, res) => {
   const { title, theme_id } = req.body;
 
   if (!Array.isArray(title)) {
-    return res.status(501).json({ message: "Поле title должно быть массивом" });
+    return res.status(405).json({ message: "Поле title должно быть массивом" });
   }
 
   try {
     if (theme_id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const createPromises = title.map(async (t) => {
         const existingRecord = await QuestionsOfThemes.findOne({
@@ -538,7 +538,7 @@ const addQuestionInTheme = async (req, res) => {
 
         if (existingRecord) {
           return res
-            .status(501)
+            .status(405)
             .json({ message: "Такой вопрос уже существует" });
         }
         return await QuestionsOfThemes.create({
@@ -551,7 +551,7 @@ const addQuestionInTheme = async (req, res) => {
 
       if (results.some((result) => result === null || result.length === 0)) {
         console.error("Ошибка при создании некоторых вопросов");
-        return res.status(501).json({
+        return res.status(405).json({
           message: "Ошибка при добавлении некоторых вопросов на тему",
         });
       } else {
@@ -575,7 +575,7 @@ const deleteCourse = async (req, res) => {
   const { id } = req.body;
   try {
     if (id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const result = await Courses.destroy({
         where: {
@@ -587,7 +587,7 @@ const deleteCourse = async (req, res) => {
           "Ошибка при выполнение запроса на удаление курса (res null)",
           error
         );
-        return res.status(501).json({ message: "Ошибка при удалении курса" });
+        return res.status(405).json({ message: "Ошибка при удалении курса" });
       } else {
         return res.status(200).json({ result });
       }
@@ -603,7 +603,7 @@ const getTitleThemeOfId = async (req, res) => {
   const { id } = req.body;
   try {
     if (id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const result = await ThemesOfCourses.findAll({
         where: {
@@ -616,7 +616,7 @@ const getTitleThemeOfId = async (req, res) => {
           "Ошибка при выполнение запроса на получение темы (res null)",
           error
         );
-        return res.status(501).json({ message: "Ошибка при получение темы" });
+        return res.status(405).json({ message: "Ошибка при получение темы" });
       } else {
         return res.status(200).json({ result });
       }
@@ -637,7 +637,7 @@ module.exports = {
   getAllThemesInCourses,
   updateThemeInCourse,
   changeAuthUserInCourse,
-  getAllTUsersInCourses,
+  getAllUsersInCourses,
   checkThemeIsBusy,
   deleteTheme,
   getAllQuestionsOfThemes,

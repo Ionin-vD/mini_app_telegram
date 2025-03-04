@@ -18,7 +18,7 @@ const addFreeSchedule = async (req, res) => {
   const { date, time, course_id } = req.body;
   try {
     if (date === null && time === null && course_id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const existingRecord = await Schedule.findOne({
         where: {
@@ -30,7 +30,7 @@ const addFreeSchedule = async (req, res) => {
 
       if (existingRecord) {
         return res
-          .status(501)
+          .status(405)
           .json({ message: "Такое расписание уже существует" });
       }
       const result = await Schedule.create({
@@ -46,7 +46,7 @@ const addFreeSchedule = async (req, res) => {
           error
         );
         return res
-          .status(501)
+          .status(405)
           .json({ message: "Ошибка при добавление свободного расписания" });
       } else {
         return res.status(200).json({ result });
@@ -63,7 +63,7 @@ const deleteSchedule = async (req, res) => {
   const { id } = req.body;
   try {
     if (id === null) {
-      return res.status(501).json({ message: "body is null" });
+      return res.status(404).json({ message: "body is null" });
     } else {
       const result = await Schedule.destroy({
         where: {
@@ -77,7 +77,7 @@ const deleteSchedule = async (req, res) => {
           error
         );
         return res
-          .status(501)
+          .status(405)
           .json({ message: "Ошибка при удалении расписания" });
       } else {
         return res.status(200).json({ result });
@@ -108,7 +108,7 @@ const getAllSchedules = async (req, res) => {
       ],
     });
     if (result === null || result.length === 0) {
-      return res.status(501).json({ message: "schedules is null" });
+      return res.status(404).json({ message: "schedules is null" });
     } else {
       return res.status(200).json({ result });
     }
@@ -141,7 +141,7 @@ const getFreeSchedule = async (req, res) => {
       ],
     });
     if (result === null || result.length === 0) {
-      return res.status(501).json({ message: "free schedules is null" });
+      return res.status(404).json({ message: "free schedules is null" });
     } else {
       return res.status(200).json({ result });
     }
@@ -175,7 +175,7 @@ const getAllScheduleIsCourse = async (req, res) => {
       ],
     });
     if (result === null || result.length === 0) {
-      return res.status(501).json({ message: "free schedules is null" });
+      return res.status(404).json({ message: "free schedules is null" });
     } else {
       return res.status(200).json({ result });
     }
