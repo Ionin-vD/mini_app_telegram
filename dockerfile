@@ -1,6 +1,8 @@
 # Используем базовый образ Node.js
 FROM node:22
 
+RUN apt-get update && apt-get install -y git
+
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
@@ -17,4 +19,4 @@ COPY . .
 EXPOSE 3001
 
 # Запускаем приложение
-CMD ["node", "index.js"]
+CMD ["node", "index_https_manag.js"]
