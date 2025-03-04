@@ -13,5 +13,5 @@ while true; do
     pkill -f index_https_manag.js
     node index_https_manag.js &
 
-    sleep 10
+    sleep 60
 done

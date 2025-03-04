@@ -16,9 +16,9 @@ services:
       - DATABASE_PASSWORD=postgres
       - DATABASE_NAME=mini_app_db
 
-      - TOKEN=7892668257:AAFMUMi-eJk9ionZT-JcKVAmv0xcGfN_cDU
+      - TOKEN=7018673370:AAF6nOJFR7zyxUStt2DrQGa0cgfVva_qBlg
       - WEB_URL=https://pxmx-home.ddns.net/
-      - CHAT_ID=1327132620
+      - CHAT_ID=1003822400
     depends_on:
       db:
         condition: service_healthy
