@@ -600,6 +600,41 @@ const deleteCourse = async (req, res) => {
   }
 };
 
+const deleteUserInCourse = async (req, res) => {
+  const { id } = req.body;
+  try {
+    if (id === null) {
+      return res.status(404).json({ message: "body is null" });
+    } else {
+      const result = await CoursesOfUsers.destroy({
+        where: {
+          id: id,
+        },
+      });
+      if (result === null || result.length === 0) {
+        console.error(
+          "Ошибка при выполнение запроса на удаление пользователя из курса (res null)",
+          error
+        );
+        return res
+          .status(405)
+          .json({ message: "Ошибка при удалении пользователя из курса" });
+      } else {
+        return res.status(200).json({ result });
+      }
+    }
+  } catch (error) {
+    console.error(
+      "Ошибка при выполнение запроса на удаление пользователя из курса",
+      error
+    );
+    res
+      .status(500)
+      .json({ message: "Ошибка при удаление пользователя из курса", error });
+    throw error;
+  }
+};
+
 const getTitleThemeOfId = async (req, res) => {
   const { id } = req.body;
   try {
@@ -647,4 +682,5 @@ module.exports = {
   addQuestionInTheme,
   deleteCourse,
   getTitleThemeOfId,
+  deleteUserInCourse,
 };
