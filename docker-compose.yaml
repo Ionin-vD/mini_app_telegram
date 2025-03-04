@@ -16,8 +16,9 @@ services:
       - DATABASE_PASSWORD=postgres
       - DATABASE_NAME=mini_app_db
     depends_on:
-      - db
-    command: ["bash", "./wait-for-db.sh", "node", "index_https_manag.js"]
+      db:
+        condition: service_healthy
+    command: ["/usr/local/bin/update-and-run"]
 
   db:
     image: postgres:13
@@ -29,6 +30,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:

@@ -1,12 +1,15 @@
 #!/bin/bash
 
-#Ожидание готовности PostgreSQL
-until pg_isready -h db -p 5432 -U postgres; do
-  echo "Ожидание PostgreSQL..."
+host="$1"
+port="$2"
+shift 2
+cmd="$@"
+
+echo "Ожидание доступности $host:$port..."
+until nc -z "$host" "$port"; do
+  echo "База данных недоступна, жду..."
   sleep 2
 done
 
-echo "PostgreSQL готов!"
-
-# Передача управления следующей команде
-exec "$@"
+echo "База данных доступна, запускаем команду..."
+exec $cmd

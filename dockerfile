@@ -1,6 +1,7 @@
 # Используем базовый образ Node.js
 FROM node:22
 
+# Устанавливаем необходимые пакеты
 RUN apt-get update && apt-get install -y git postgresql-client
 
 # Устанавливаем рабочую директорию
@@ -15,8 +16,13 @@ RUN npm install
 # Копируем исходный код
 COPY . .
 
+# Копируем скрипты
+COPY wait-for-it.sh /usr/local/bin/wait-for-it
+COPY update_and_run.sh /usr/local/bin/update-and-run
+RUN chmod +x /usr/local/bin/wait-for-it /usr/local/bin/update-and-run
+
 # Указываем порт
 EXPOSE 3001
 
-# CMD ["node", "index_https_manag.js"]
-CMD ["sh", "-c", "node ./src/db/config/config.js && sleep 5 && node index_https_manag.js"]
+# Запуск скрипта обновления кода и старта сервера
+CMD ["/usr/local/bin/update-and-run"]
