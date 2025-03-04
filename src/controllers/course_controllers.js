@@ -52,6 +52,16 @@ const addCourse = async (req, res) => {
     if (id === null || title === null) {
       return res.status(501).json({ message: "body is null" });
     } else {
+      const existingRecord = await Courses.findOne({
+        where: {
+          admin_id: id,
+          title: title,
+        },
+      });
+
+      if (existingRecord) {
+        return res.status(501).json({ message: "Такой курс уже существует" });
+      }
       const result = await Courses.create({
         admin_id: id,
         title: title,
@@ -119,6 +129,18 @@ const addUserInCourse = async (req, res) => {
     if (user_id === null || course_id === null) {
       return res.status(501).json({ message: "body is null" });
     } else {
+      const existingRecord = await CoursesOfUsers.findOne({
+        where: {
+          user_id: user_id,
+          course_id: course_id,
+        },
+      });
+
+      if (existingRecord) {
+        return res
+          .status(501)
+          .json({ message: "Пользователь уже записан на этот курс" });
+      }
       const result = await CoursesOfUsers.create({
         user_id: user_id,
         course_id: course_id,
@@ -146,7 +168,7 @@ const addUserInCourse = async (req, res) => {
         "Ошибка при выполнение запроса на добавления пользователя на курс",
       error,
     });
-    //throw error;
+    throw error;
   }
 };
 
@@ -157,6 +179,16 @@ const addThemeInCourse = async (req, res) => {
     if (title === null || course_id === null) {
       return res.status(501).json({ message: "body is null" });
     } else {
+      const existingRecord = await ThemesOfCourses.findOne({
+        where: {
+          title: title,
+          course_id: course_id,
+        },
+      });
+
+      if (existingRecord) {
+        return res.status(501).json({ message: "Такая тема уже существует" });
+      }
       const result = await ThemesOfCourses.create({
         title: title,
         course_id: course_id,
@@ -485,6 +517,18 @@ const addQuestionInTheme = async (req, res) => {
       return res.status(501).json({ message: "body is null" });
     } else {
       const createPromises = title.map(async (t) => {
+        const existingRecord = await QuestionsOfThemes.findOne({
+          where: {
+            title: t,
+            theme_id: theme_id,
+          },
+        });
+
+        if (existingRecord) {
+          return res
+            .status(501)
+            .json({ message: "Такой вопрос уже существует" });
+        }
         return await QuestionsOfThemes.create({
           title: t,
           theme_id: theme_id,

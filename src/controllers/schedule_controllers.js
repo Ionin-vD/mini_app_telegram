@@ -20,6 +20,19 @@ const addFreeSchedule = async (req, res) => {
     if (date === null && time === null && course_id === null) {
       return res.status(501).json({ message: "body is null" });
     } else {
+      const existingRecord = await Schedule.findOne({
+        where: {
+          course_id: course_id,
+          date: date,
+          time: time,
+        },
+      });
+
+      if (existingRecord) {
+        return res
+          .status(501)
+          .json({ message: "Такое расписание уже существует" });
+      }
       const result = await Schedule.create({
         user_id: null,
         theme_id: null,
