@@ -14,11 +14,9 @@ RUN npm install
 
 # Копируем исходный код
 COPY . .
-# COPY cert.pem /app/cert.pem
-# COPY privkey.pem /app/privkey.pem
 
 # Указываем порт
 EXPOSE 3001
 
-# Запускаем приложение
-CMD ["node", "index_https_manag.js"]
+# CMD ["node", "index_https_manag.js"]
+CMD ["sh", "-c", "node ./src/db/config/config.js && sleep 5 && node index_https_manag.js"]
