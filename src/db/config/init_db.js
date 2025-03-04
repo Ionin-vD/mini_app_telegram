@@ -21,14 +21,14 @@ const initDB = async () => {
 
     const result = await client.query(
       `SELECT 1 FROM pg_database WHERE datname = $1`,
-      [process.env.DB_NAME]
+      [process.env.DATABASE_NAME]
     );
 
     if (result.rows.length === 0) {
-      await client.query(`CREATE DATABASE "${process.env.DB_NAME}"`);
-      console.log(`База данных "${process.env.DB_NAME}" создана.`);
+      await client.query(`CREATE DATABASE "${process.env.DATABASE_NAME}"`);
+      console.log(`База данных "${process.env.DATABASE_NAME}" создана.`);
     } else {
-      console.log(`База данных "${process.env.DB_NAME}" уже существует.`);
+      console.log(`База данных "${process.env.DATABASE_NAME}" уже существует.`);
     }
   } catch (error) {
     console.error("Ошибка при проверке/создании базы данных:", error);
