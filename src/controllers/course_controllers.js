@@ -336,6 +336,10 @@ const changeAuthUserInCourse = async (req, res) => {
         });
       }
       const newAuthInCourse = !record.auth_in_course;
+      console.log(record);
+      console.log(record.auth_in_course);
+      console.log(!record.auth_in_course);
+      console.log(newAuthInCourse);
 
       const result = await CoursesOfUsers.update(
         { auth_in_course: newAuthInCourse },
