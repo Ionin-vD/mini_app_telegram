@@ -11,13 +11,14 @@ services:
       - /etc/letsencrypt/live/pxmx-home.ddns.net/privkey.pem:/app/privkey.pem
     environment:
       - DATABASE_HOST=db
-      - DATABASE_PORT=5433
-      - DATABASE_USER=your_db_user
-      - DATABASE_PASSWORD=your_db_password
-      - DATABASE_NAME=your_db_name
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_NAME=mini_app_db
     depends_on:
       - db
-    command: [/bin/bash, "./update_and_run.sh"]
+    command: ["./wait-for-db.sh", "node", "index_https_manag.js"]
+
   db:
     image: postgres:13
     environment:
@@ -28,5 +29,6 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
+
 volumes:
   postgres_data:
