@@ -17,8 +17,8 @@ RUN npm install
 COPY . .
 
 # Копируем скрипты
-COPY wait-for-it.sh /usr/local/bin/wait-for-it
-COPY update_and_run.sh /usr/local/bin/update-and-run
+COPY ./wait-for-it.sh /usr/local/bin/wait-for-it
+COPY ./update_and_run.sh /usr/local/bin/update-and-run
 RUN chmod +x /usr/local/bin/wait-for-it /usr/local/bin/update-and-run
 
 # Указываем порт
