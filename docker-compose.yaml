@@ -9,4 +9,4 @@ services:
       - ./:/app
       - /etc/letsencrypt/live/pxmx-home.ddns.net/cert.pem:/app/cert.pem
       - /etc/letsencrypt/live/pxmx-home.ddns.net/privkey.pem:/app/key.pem
-    command: ["./update_and_run.sh"]
+    command: [/bin/bash, "./update_and_run.sh"]
