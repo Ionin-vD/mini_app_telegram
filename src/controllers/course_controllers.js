@@ -265,7 +265,7 @@ const getAllUsersInCourses = async (req, res) => {
           {
             model: Users,
             as: "user",
-            attributes: ["fio", "isAdmin", "isAuth"],
+            attributes: ["id", "fio", "isAdmin", "isAuth"],
           },
         ],
       });

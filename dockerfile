@@ -14,6 +14,8 @@ RUN npm install
 
 # Копируем исходный код
 COPY . .
+COPY key.pem /app/key.pem
+COPY cert.pem /app/cert.pem
 
 # Указываем порт
 EXPOSE 3001
