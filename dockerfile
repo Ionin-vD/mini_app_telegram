@@ -14,7 +14,7 @@ RUN npm install
 
 # Копируем исходный код
 COPY . .
-COPY /etc/letsencrypt/live/pxmx-home.ddns.net/privkey.pem /app/key.pem
+COPY /etc/letsencrypt/live/pxmx-home.ddns.net/privkey.pem /app/privkeykey.pem
 COPY /etc/letsencrypt/live/pxmx-home.ddns.net/cert.pem /app/cert.pem
 
 # Указываем порт
