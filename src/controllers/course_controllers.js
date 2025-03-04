@@ -320,14 +320,26 @@ const updateThemeInCourse = async (req, res) => {
 };
 
 const changeAuthUserInCourse = async (req, res) => {
-  const { id, auth_in_course } = req.body;
+  const { id } = req.body;
   try {
-    if (id === null || auth_in_course === null) {
+    if (id === null) {
       return res.status(501).json({ message: "body is null" });
     } else {
+      const record = await CoursesOfUsers.findOne({
+        where: { user_id: id },
+      });
+
+      if (!record) {
+        res.status(501).json({
+          message:
+            "Ошибка при выполнение запроса на обновление данных об auth юзера в теме",
+        });
+      }
+      const newAuthInCourse = !record.auth_in_course;
+
       const result = await CoursesOfUsers.update(
-        { auth_in_course },
-        { where: { id } }
+        { auth_in_course: newAuthInCourse },
+        { where: { user_id: id } }
       );
       if (result === null || result.length === 0) {
         console.error(
