@@ -7,4 +7,6 @@ services:
       - "3001:3001"
     volumes:
       - ./:/app
+      - /etc/letsencrypt/live/pxmx-home.ddns.net/cert.pem:/app/cert.pem
+      - /etc/letsencrypt/live/pxmx-home.ddns.net/privkey.pem:/app/key.pem
     command: ["./update_and_run.sh"]

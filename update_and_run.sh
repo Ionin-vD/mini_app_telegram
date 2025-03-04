@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cp /app
+cd /app
 
 while true; do
     git pull origin main
