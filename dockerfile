@@ -2,7 +2,7 @@
 FROM node:22
 
 # Устанавливаем необходимые пакеты
-RUN apt-get update && apt-get install -y git postgresql-client
+RUN apt-get update && apt-get install -y git postgresql-client netcat
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
