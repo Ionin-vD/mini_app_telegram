@@ -14,18 +14,26 @@ spec:
     spec:
       containers:
         - name: miniapp
-          image: your_dockerhub_username/miniapp:latest # Укажите имя вашего образа
+          image: your_dockerhub_username/miniapp:latest # замените на ваш образ
           ports:
-            - containerPort: 8000
+            - containerPort: 3001
+          volumeMounts:
+            - name: tls-secret
+              mountPath: "/certs"
+              readOnly: true
           readinessProbe:
             httpGet:
-              path: /health # Эндпоинт проверки готовности
-              port: 8000
+              path: /health
+              port: 3001
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /health # Эндпоинт для проверки живости приложения
-              port: 8000
+              path: /health
+              port: 3001
             initialDelaySeconds: 15
             periodSeconds: 20
+      volumes:
+        - name: tls-secret
+          secret:
+            secretName: miniapp-tls

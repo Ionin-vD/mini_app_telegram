@@ -7,6 +7,6 @@ spec:
     app: miniapp
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 8000
+      port: 443
+      targetPort: 3001
   type: LoadBalancer
