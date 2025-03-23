@@ -321,13 +321,13 @@ const updateThemeInCourse = async (req, res) => {
 };
 
 const changeAuthUserInCourse = async (req, res) => {
-  const { id } = req.body;
+  const { course_id, user_id } = req.body;
   try {
-    if (id === null) {
+    if (course_id === null || user_id === null) {
       return res.status(404).json({ message: "body is null" });
     } else {
       const record = await CoursesOfUsers.findOne({
-        where: { user_id: id },
+        where: { user_id: user_id, course_id: course_id },
       });
 
       if (record === null || !record) {
@@ -340,7 +340,7 @@ const changeAuthUserInCourse = async (req, res) => {
 
       const result = await CoursesOfUsers.update(
         { auth_in_course: newAuthInCourse },
-        { where: { user_id: id } }
+        { where: { user_id: user_id, course_id: course_id } }
       );
       if (result === null || result.length === 0) {
         console.error(
