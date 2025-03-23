@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: miniapp
-          image: your_dockerhub_username/miniapp:latest # замените на ваш образ
+          image: dmitrijionin/miniapp:latest
           ports:
             - containerPort: 3001
           volumeMounts:

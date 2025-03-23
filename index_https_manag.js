@@ -24,12 +24,17 @@ const bot = new Telegraf(token);
 const PORT = process.env.PORT || 3001;
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// const options = {
+//   key: fs.readFileSync("/etc/letsencrypt/live/pxmx-home.ddns.net/privkey.pem"),
+//   cert: fs.readFileSync(
+//     "/etc/letsencrypt/live/pxmx-home.ddns.net/fullchain.pem"
+//   ),
+// };
 const options = {
-  key: fs.readFileSync("/etc/letsencrypt/live/pxmx-home.ddns.net/privkey.pem"),
-  cert: fs.readFileSync(
-    "/etc/letsencrypt/live/pxmx-home.ddns.net/fullchain.pem"
-  ),
+  key: fs.readFileSync("./certs/privkey.pem"),
+  cert: fs.readFileSync("./certs/fullchain.pem"),
 };
+
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 app.use(cors());
