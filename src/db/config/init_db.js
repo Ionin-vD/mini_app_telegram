@@ -16,6 +16,12 @@ const initDB = async () => {
       user: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
     });
+    // client = new Client({
+    //   host: 'postgres-service',
+    //   port: 5432,
+    //   user: process.env.POSTGRES_USER,
+    //   password: process.env.POSTGRES_PASSWORD,
+    // });
 
     await client.connect();
 

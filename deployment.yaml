@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: miniapp-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: miniapp
+  template:
+    metadata:
+      labels:
+        app: miniapp
+    spec:
+      containers:
+        - name: miniapp
+          image: your_dockerhub_username/miniapp:latest # Укажите имя вашего образа
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /health # Эндпоинт проверки готовности
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health # Эндпоинт для проверки живости приложения
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20

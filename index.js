@@ -1,4 +1,5 @@
 const express = require("express");
+const logger = require("./logger");
 const cors = require("cors");
 const { Telegraf, Markup } = require("telegraf");
 const messages = require("./messages");
@@ -92,3 +93,5 @@ app.listen(PORT, () => {
 });
 
 bot.launch();
+
+logger.info("Приложение запущено");
