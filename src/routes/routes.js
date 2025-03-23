@@ -13,6 +13,8 @@ const {
   addFreeSchedule,
   deleteSchedule,
   getAllScheduleIsCourse,
+  addSchedule,
+  addUserSchedule,
 } = require("../controllers/schedule_controllers");
 
 const {
@@ -53,6 +55,10 @@ router.get("/get_all_schedule", getAllSchedules);
 router.get("/get_free_schedule", getFreeSchedule);
 
 router.post("/add_free_schedule", addFreeSchedule);
+
+router.post("/add_schedule", addSchedule);
+
+router.post("/add_user_schedule", addUserSchedule);
 
 router.post("/delete_schedule", deleteSchedule);
 
