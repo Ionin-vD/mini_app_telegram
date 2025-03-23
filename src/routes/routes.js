@@ -36,6 +36,7 @@ const {
   deleteCourse,
   getTitleThemeOfId,
   deleteUserInCourse,
+  checkAuthUserInCourse,
 } = require("../controllers/course_controllers");
 
 const router = express.Router();
@@ -82,6 +83,8 @@ router.post("/add_theme_in_course", addThemeInCourse);
 router.post("/update_theme_in_course", updateThemeInCourse);
 
 router.post("/change_auth_user_in_course", changeAuthUserInCourse);
+
+router.post("/check_auth_user_in_course", checkAuthUserInCourse);
 
 router.post("/check_themes_is_busy", checkThemeIsBusy);
 
