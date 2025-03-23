@@ -37,6 +37,7 @@ const {
   getTitleThemeOfId,
   deleteUserInCourse,
   checkAuthUserInCourse,
+  getCoursesWhereUserAuth,
 } = require("../controllers/course_controllers");
 
 const router = express.Router();
@@ -103,5 +104,7 @@ router.post("/delete_course", deleteCourse);
 router.post("/delete_user_in_course", deleteUserInCourse);
 
 router.post("/get_title_theme_of_id", getTitleThemeOfId);
+
+router.post("/get_courses_where_user_auth", getCoursesWhereUserAuth);
 
 module.exports = router;

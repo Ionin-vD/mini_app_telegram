@@ -327,7 +327,7 @@ const changeAuthUserInCourse = async (req, res) => {
       return res.status(404).json({ message: "body is null" });
     } else {
       const record = await CoursesOfUsers.findOne({
-        where: { user_id: user_id, course_id: course_id },
+        where: { user_id, course_id },
       });
 
       if (record === null || !record) {
@@ -340,7 +340,7 @@ const changeAuthUserInCourse = async (req, res) => {
 
       const result = await CoursesOfUsers.update(
         { auth_in_course: newAuthInCourse },
-        { where: { user_id: user_id, course_id: course_id } }
+        { where: { user_id, course_id } }
       );
       if (result === null || result.length === 0) {
         console.error(
@@ -375,7 +375,7 @@ const checkAuthUserInCourse = async (req, res) => {
       return res.status(404).json({ message: "body is null" });
     } else {
       const result = await CoursesOfUsers.findOne({
-        where: { user_id: user_id, course_id: course_id },
+        where: { user_id, course_id },
         attributes: ["auth_in_course"],
       });
       if (result === null || result.length === 0) {
@@ -699,6 +699,43 @@ const getTitleThemeOfId = async (req, res) => {
   }
 };
 
+const getCoursesWhereUserAuth = async (req, res) => {
+  const { user_id } = req.body;
+  try {
+    if (user_id === null) {
+      return res.status(404).json({ message: "body is null" });
+    } else {
+      const result = await CoursesOfUsers.findAll({
+        where: { user_id, auth_in_course: true },
+        attributes: ["id"],
+        include: [
+          {
+            model: Courses,
+            as: "course",
+            attributes: ["id", "title"],
+          },
+        ],
+      });
+      if (result === null || result.length === 0) {
+        return res.status(404).json({ message: "courses is null" });
+      } else {
+        return res.status(200).json({ result });
+      }
+    }
+  } catch (error) {
+    console.error(
+      "Ошибка при выполнение запроса на получение всех курсов в которых пользователь авторизован",
+      error
+    );
+    res.status(500).json({
+      message:
+        "Ошибка при получение всех курсов в которых пользователь авторизован",
+      error,
+    });
+    throw error;
+  }
+};
+
 module.exports = {
   addCourse,
   getAllCourse,
@@ -719,4 +756,5 @@ module.exports = {
   getTitleThemeOfId,
   deleteUserInCourse,
   checkAuthUserInCourse,
+  getCoursesWhereUserAuth,
 };
