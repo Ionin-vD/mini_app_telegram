@@ -165,8 +165,7 @@ const addSchedule = async (req, res) => {
             .json({ message: "Ошибка при добавлении расписания" });
         }
 
-        // Добавляем только что созданное расписание в список существующих,
-        // чтобы последующие проверки учитывали его
+        // Добавляем только что созданное расписание в список существующих, чтобы последующие проверки учитывали его
         existingSchedules.push(result);
       }
       return res.status(200).json({ message: "Расписание успешно добавлено" });
@@ -184,7 +183,7 @@ const addSchedule = async (req, res) => {
 const addUserSchedule = async (req, res) => {
   const { id, user_id } = req.body;
   try {
-    if (!id || !user_id) {
+    if (id === null && user_id === null) {
       return res.status(404).json({ message: "body is null" });
     } else {
       const existingRecord = await Schedule.findOne({
