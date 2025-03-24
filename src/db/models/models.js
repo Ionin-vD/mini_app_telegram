@@ -104,6 +104,7 @@ Users.hasMany(CoursesOfUsers, {
 CoursesOfUsers.belongsTo(Courses, {
   foreignKey: "course_id",
   as: "course",
+  onDelete: "CASCADE",
 });
 
 const FeedBackOfCourse = sequelize.define(

@@ -707,12 +707,19 @@ const getCoursesWhereUserAuth = async (req, res) => {
     } else {
       const result = await CoursesOfUsers.findAll({
         where: { user_id, auth_in_course: true },
-        attributes: ["id"],
+        attributes: ["id", "user_id"],
         include: [
           {
             model: Courses,
             as: "course",
             attributes: ["id", "title"],
+            include: [
+              {
+                model: Users,
+                as: "admin",
+                attributes: ["id", "fio"],
+              },
+            ],
           },
         ],
       });
